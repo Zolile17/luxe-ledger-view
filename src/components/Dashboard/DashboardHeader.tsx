@@ -161,8 +161,8 @@ export function DashboardHeader({
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOutIcon className="mr-2 h-4 w-4" />
+            <DropdownMenuItem onClick={handleLogout}>
+              <LogOutIcon className="mr-2 h-4 w-4"  />
               <span>Log out</span>
             </DropdownMenuItem>
           </DropdownMenuContent>

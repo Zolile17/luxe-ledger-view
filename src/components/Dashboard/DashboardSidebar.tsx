@@ -155,7 +155,7 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
             onClick={() => handleNavigation("products")}
             expanded={expanded}
           />
-          <SidebarItem 
+          {/* <SidebarItem 
             icon={<StoreIcon className="h-4 w-4" />} 
             label="Store Performance" 
             active={isActive("store-performance")}
@@ -168,7 +168,7 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
             active={isActive("export")}
             onClick={() => handleNavigation("export")}
             expanded={expanded}
-          />
+          /> */}
         </nav>
       </div>
 

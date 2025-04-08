@@ -2,10 +2,11 @@ import { DashboardLayout } from "@/components/Dashboard/DashboardLayout";
 import { ReconciliationTable } from "@/components/Dashboard/ReconciliationTable";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { Button } from "@/components/ui/button";
-import { DownloadIcon, FilterIcon } from "lucide-react";
+import { DownloadIcon, FilterIcon, FileDownIcon } from "lucide-react";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import { getTransactionsByStore } from "@/data/dashboardData";
+import { ExportReportDialog } from "@/components/Dashboard/ExportReportDialog";
 
 export default function ReconciliationPage() {
   const [dateRange, setDateRange] = useState<DateRange>({
@@ -43,10 +44,15 @@ export default function ReconciliationPage() {
               Filter
             </Button>
           </div>
-          <Button variant="outline" size="sm">
-            <DownloadIcon className="mr-2 h-4 w-4" />
-            Export
-          </Button>
+          <ExportReportDialog 
+            trigger={
+              <Button variant="outline" size="sm">
+                <FileDownIcon className="mr-2 h-4 w-4" />
+                Export
+              </Button>
+            }
+            selectedStore={selectedStore}
+          />
         </div>
 
         <div className="grid gap-4">

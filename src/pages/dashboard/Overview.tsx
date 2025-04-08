@@ -4,11 +4,12 @@ import { RevenueChart } from "@/components/Dashboard/RevenueChart";
 import { TransactionsTable } from "@/components/Dashboard/TransactionsTable";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { Button } from "@/components/ui/button";
-import { DownloadIcon, FilterIcon, CircleDollarSignIcon, BarChart3Icon, ShoppingBagIcon, UsersIcon } from "lucide-react";
+import { DownloadIcon, FilterIcon, CircleDollarSignIcon, BarChart3Icon, ShoppingBagIcon, UsersIcon, FileDownIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { isWithinInterval, parseISO } from "date-fns";
-import { getStoreData, getRevenueData, getTransactionsByStore } from "@/data/dashboardData";
+import { getStoreData, getRevenueData, getTransactionsByStore, storeLocations } from "@/data/dashboardData";
 import { DateRange } from "react-day-picker";
+import { ExportReportDialog } from "@/components/Dashboard/ExportReportDialog";
 
 export default function OverviewPage() {
   const [dateRange, setDateRange] = useState<DateRange>({
@@ -38,6 +39,13 @@ export default function OverviewPage() {
   const averageOrder = storeMetrics.averageOrder;
   const newCustomers = storeMetrics.newCustomers;
 
+  const formatCurrency = (value: number): string => {
+    return new Intl.NumberFormat('en-ZA', {
+      style: 'currency',
+      currency: 'ZAR',
+    }).format(value);
+  };
+
   return (
     <DashboardLayout
       title="Dashboard Overview"
@@ -55,10 +63,15 @@ export default function OverviewPage() {
             <FilterIcon className="h-4 w-4 mr-2" />
             Filter
           </Button>
-          <Button className="bg-lv-gold hover:bg-lv-gold/90 text-black">
-            <DownloadIcon className="h-4 w-4 mr-2" />
-            Export
-          </Button>
+          <ExportReportDialog 
+            trigger={
+              <Button className="bg-lv-gold hover:bg-lv-gold/90 text-black">
+                <FileDownIcon className="h-4 w-4 mr-2" />
+                Export
+              </Button>
+            }
+            selectedStore={selectedStore}
+          />
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -99,11 +112,4 @@ export default function OverviewPage() {
       </div>
     </DashboardLayout>
   );
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('en-ZA', {
-    style: 'currency',
-    currency: 'ZAR',
-  }).format(value);
 } 

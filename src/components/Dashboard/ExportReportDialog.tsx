@@ -26,71 +26,75 @@ import {
   transactionsData,
   activitiesData
 } from "@/data/dashboardData";
-import { Document, Page, Text, View, StyleSheet, PDFViewer } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, PDFViewer, Font } from "@react-pdf/renderer";
+import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { CalendarIcon, DownloadIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { getRevenueData } from "@/data/dashboardData";
+import { getProductMetrics } from "@/data/productData";
+import { Transaction } from "@/components/Dashboard/TransactionsTable";
+import { pdf } from "@react-pdf/renderer";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 // Create styles for PDF
 const styles = StyleSheet.create({
   page: {
     padding: 30,
-    backgroundColor: '#ffffff'
+    fontFamily: 'Helvetica',
   },
   header: {
     marginBottom: 20,
-    borderBottom: 1,
-    paddingBottom: 10
   },
   title: {
     fontSize: 24,
     marginBottom: 10,
-    color: '#8B4513'
+    fontWeight: 'bold',
   },
   subtitle: {
-    fontSize: 14,
-    color: '#666666'
+    fontSize: 12,
+    marginBottom: 5,
   },
   section: {
-    marginBottom: 20
+    marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 16,
+    fontWeight: 'bold',
     marginBottom: 10,
-    color: '#8B4513'
+  },
+  metric: {
+    flexDirection: 'row',
+    marginBottom: 5,
+  },
+  metricLabel: {
+    width: '50%',
+    fontSize: 12,
+  },
+  metricValue: {
+    width: '50%',
+    fontSize: 12,
   },
   table: {
-    display: 'flex',
-    flexDirection: 'column',
     width: '100%',
-    marginBottom: 10
   },
   tableRow: {
-    display: 'flex',
     flexDirection: 'row',
-    borderBottom: 1,
-    paddingVertical: 5
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+    paddingVertical: 5,
   },
   tableHeader: {
-    backgroundColor: '#f5f5f5',
-    fontWeight: 'bold'
+    backgroundColor: '#f0f0f0',
+    fontWeight: 'bold',
   },
   tableCell: {
     flex: 1,
-    padding: 5,
-    fontSize: 10
+    fontSize: 10,
+    paddingHorizontal: 5,
   },
-  metric: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 5
-  },
-  metricLabel: {
-    fontSize: 12,
-    color: '#666666'
-  },
-  metricValue: {
-    fontSize: 12,
-    fontWeight: 'bold'
-  }
 });
 
 // PDF Document Component
@@ -192,80 +196,200 @@ const ActivitiesReportPDF = ({ data, store, dateRange }) => (
 );
 
 interface ExportReportDialogProps {
-  trigger?: React.ReactNode;
-  selectedStore?: string;
+  trigger: React.ReactNode;
+  selectedStore: string;
 }
 
-export function ExportReportDialog({ trigger, selectedStore = "All Stores" }: ExportReportDialogProps) {
-  const [reportType, setReportType] = useState("sales");
-  const [store, setStore] = useState(selectedStore);
-  const [exportFormat, setExportFormat] = useState("pdf");
-  const [dateRange, setDateRange] = useState("this-week");
+type ReportType = "sales" | "reconciliation" | "products";
+type ExportFormat = "pdf" | "csv";
+
+export function ExportReportDialog({ trigger, selectedStore }: ExportReportDialogProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [reportType, setReportType] = useState<ReportType>("sales");
+  const [exportFormat, setExportFormat] = useState<ExportFormat>("pdf");
+  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
+  const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [showPDFPreview, setShowPDFPreview] = useState(false);
 
-  const handleExport = () => {
-    let dataToExport;
-    let fileName;
-    const storeData = getStoreData(store);
+  const formatCurrency = (value: number): string => {
+    return new Intl.NumberFormat('en-ZA', {
+      style: 'currency',
+      currency: 'ZAR',
+    }).format(value);
+  };
 
-    switch (reportType) {
-      case "sales":
-        dataToExport = {
-          totalSales: storeData.revenue[storeData.revenue.length - 1],
-          salesCount: storeData.salesCount,
-          averageOrder: storeData.averageOrder,
-          newCustomers: storeData.newCustomers,
-          revenueData: storeData.revenue
-        };
-        fileName = `sales-report-${store.toLowerCase().replace(/\s+/g, '-')}`;
-        break;
-      case "reconciliation":
-        dataToExport = getTransactionsByStore(store);
-        fileName = `reconciliation-report-${store.toLowerCase().replace(/\s+/g, '-')}`;
-        break;
-      case "products":
-        dataToExport = getActivitiesByStore(store);
-        fileName = `products-report-${store.toLowerCase().replace(/\s+/g, '-')}`;
-        break;
-      default:
-        return;
-    }
+  const handleExport = async () => {
+    if (!selectedStore || !startDate || !endDate) return;
+
+    const filteredTransactions = getTransactionsByStore(selectedStore).filter(
+      (transaction) => {
+        const transactionDate = new Date(transaction.date);
+        return transactionDate >= startDate && transactionDate <= endDate;
+      }
+    );
+
+    const metrics = getProductMetrics();
+    const totalSales = filteredTransactions.reduce((sum, t) => sum + t.amount, 0);
+    const totalTransactions = filteredTransactions.length;
+    const averageTransaction = totalTransactions > 0 ? totalSales / totalTransactions : 0;
+
+    // Calculate top products
+    const topProducts = filteredTransactions
+      .reduce((acc, t) => {
+        const existing = acc.find(p => p.name === t.productName);
+        if (existing) {
+          existing.sales += t.amount;
+          existing.quantity += 1;
+        } else {
+          acc.push({
+            id: t.id,
+            name: t.productName,
+            sales: t.amount,
+            quantity: 1
+          });
+        }
+        return acc;
+      }, [] as { id: string; name: string; sales: number; quantity: number }[])
+      .sort((a, b) => b.sales - a.sales)
+      .slice(0, 5);
 
     if (exportFormat === "pdf") {
-      setShowPDFPreview(true);
-    } else {
-      // For Excel, we'll create a CSV
-      let csvContent = '';
-      if (Array.isArray(dataToExport)) {
-        const headers = Object.keys(dataToExport[0]);
-        csvContent = headers.join(',') + '\n';
-        dataToExport.forEach(item => {
-          const values = headers.map(header => {
-            const value = item[header];
-            return typeof value === 'string' ? `"${value}"` : value;
-          });
-          csvContent += values.join(',') + '\n';
-        });
-      } else {
-        csvContent = Object.entries(dataToExport)
-          .map(([key, value]) => `${key},${value}`)
-          .join('\n');
-      }
-      
-      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const MyDocument = () => (
+        <Document>
+          <Page size="A4" style={styles.page}>
+            <View style={styles.header}>
+              <Text style={styles.title}>Sales Report</Text>
+              <Text style={styles.subtitle}>
+                {selectedStore} - {format(startDate, "MMM d, yyyy")} to{" "}
+                {format(endDate, "MMM d, yyyy")}
+              </Text>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Summary</Text>
+              <View style={styles.metric}>
+                <Text style={styles.metricLabel}>Total Sales:</Text>
+                <Text style={styles.metricValue}>
+                  {formatCurrency(totalSales)}
+                </Text>
+              </View>
+              <View style={styles.metric}>
+                <Text style={styles.metricLabel}>Total Transactions:</Text>
+                <Text style={styles.metricValue}>{totalTransactions}</Text>
+              </View>
+              <View style={styles.metric}>
+                <Text style={styles.metricLabel}>Average Transaction:</Text>
+                <Text style={styles.metricValue}>
+                  {formatCurrency(averageTransaction)}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Top Products</Text>
+              <View style={styles.table}>
+                <View style={[styles.tableRow, styles.tableHeader]}>
+                  <Text style={styles.tableCell}>Product</Text>
+                  <Text style={styles.tableCell}>Sales</Text>
+                  <Text style={styles.tableCell}>Quantity</Text>
+                </View>
+                {topProducts.map((product) => (
+                  <View key={product.id} style={styles.tableRow}>
+                    <Text style={styles.tableCell}>{product.name}</Text>
+                    <Text style={styles.tableCell}>
+                      {formatCurrency(product.sales)}
+                    </Text>
+                    <Text style={styles.tableCell}>{product.quantity}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Recent Transactions</Text>
+              <View style={styles.table}>
+                <View style={[styles.tableRow, styles.tableHeader]}>
+                  <Text style={styles.tableCell}>Date</Text>
+                  <Text style={styles.tableCell}>Product</Text>
+                  <Text style={styles.tableCell}>Amount</Text>
+                  <Text style={styles.tableCell}>Status</Text>
+                </View>
+                {filteredTransactions.slice(0, 10).map((transaction) => (
+                  <View key={transaction.id} style={styles.tableRow}>
+                    <Text style={styles.tableCell}>
+                      {format(new Date(transaction.date), "MMM d, yyyy")}
+                    </Text>
+                    <Text style={styles.tableCell}>{transaction.productName}</Text>
+                    <Text style={styles.tableCell}>
+                      {formatCurrency(transaction.amount)}
+                    </Text>
+                    <Text style={styles.tableCell}>{transaction.status}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          </Page>
+        </Document>
+      );
+
+      const blob = await pdf(<MyDocument />).toBlob();
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${fileName}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `sales-report-${selectedStore}-${format(
+        startDate,
+        "yyyy-MM-dd"
+      )}-${format(endDate, "yyyy-MM-dd")}.pdf`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } else {
+      // CSV export logic
+      const csvContent = [
+        ["Sales Report"],
+        [selectedStore],
+        [`${format(startDate, "MMM d, yyyy")} to ${format(endDate, "MMM d, yyyy")}`],
+        [],
+        ["Summary"],
+        ["Total Sales", formatCurrency(totalSales)],
+        ["Total Transactions", totalTransactions],
+        ["Average Transaction", formatCurrency(averageTransaction)],
+        [],
+        ["Top Products"],
+        ["Product", "Sales", "Quantity"],
+        ...topProducts.map((product) => [
+          product.name,
+          formatCurrency(product.sales),
+          product.quantity,
+        ]),
+        [],
+        ["Recent Transactions"],
+        ["Date", "Product", "Amount", "Status"],
+        ...filteredTransactions.slice(0, 10).map((transaction) => [
+          format(new Date(transaction.date), "MMM d, yyyy"),
+          transaction.productName,
+          formatCurrency(transaction.amount),
+          transaction.status,
+        ]),
+      ];
+
+      const csv = csvContent.map((row) => row.join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `sales-report-${selectedStore}-${format(
+        startDate,
+        "yyyy-MM-dd"
+      )}-${format(endDate, "yyyy-MM-dd")}.csv`;
+      link.click();
       URL.revokeObjectURL(url);
     }
+
+    setIsOpen(false);
   };
 
   const renderPDFPreview = () => {
-    const storeData = getStoreData(store);
+    const storeData = getStoreData(selectedStore);
     let PDFComponent;
 
     switch (reportType) {
@@ -278,26 +402,26 @@ export function ExportReportDialog({ trigger, selectedStore = "All Stores" }: Ex
               averageOrder: storeData.averageOrder,
               newCustomers: storeData.newCustomers
             }}
-            store={store}
-            dateRange={dateRange}
+            store={selectedStore}
+            dateRange={`${format(startDate!, 'PPP')} - ${format(endDate!, 'PPP')}`}
           />
         );
         break;
       case "reconciliation":
         PDFComponent = (
           <TransactionsReportPDF
-            data={getTransactionsByStore(store)}
-            store={store}
-            dateRange={dateRange}
+            data={getTransactionsByStore(selectedStore)}
+            store={selectedStore}
+            dateRange={`${format(startDate!, 'PPP')} - ${format(endDate!, 'PPP')}`}
           />
         );
         break;
       case "products":
         PDFComponent = (
           <ActivitiesReportPDF
-            data={getActivitiesByStore(store)}
-            store={store}
-            dateRange={dateRange}
+            data={getActivitiesByStore(selectedStore)}
+            store={selectedStore}
+            dateRange={`${format(startDate!, 'PPP')} - ${format(endDate!, 'PPP')}`}
           />
         );
         break;
@@ -325,111 +449,115 @@ export function ExportReportDialog({ trigger, selectedStore = "All Stores" }: Ex
     );
   };
 
-  const defaultTrigger = (
-    <Button>
-      <FileTextIcon className="h-4 w-4 mr-2" />
-      Export Report
-    </Button>
-  );
-
   return (
-    <>
-      <Dialog>
-        <DialogTrigger asChild>
-          {trigger || defaultTrigger}
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-lv-brown font-serif">Export Report</DialogTitle>
-            <DialogDescription>
-              Configure your report export settings.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="report-type">Report Type</Label>
-              <Select value={reportType} onValueChange={setReportType}>
-                <SelectTrigger id="report-type">
-                  <SelectValue placeholder="Select Report Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="sales">Sales Report</SelectItem>
-                  <SelectItem value="reconciliation">Reconciliation Report</SelectItem>
-                  <SelectItem value="products">Products Report</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="store">Store</Label>
-              <Select value={store} onValueChange={setStore}>
-                <SelectTrigger id="store">
-                  <SelectValue placeholder="Select Store" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="All Stores">All Stores</SelectItem>
-                  <SelectItem value="New York 5th Avenue">New York 5th Avenue</SelectItem>
-                  <SelectItem value="Paris Champs-Élysées">Paris Champs-Élysées</SelectItem>
-                  <SelectItem value="London Bond Street">London Bond Street</SelectItem>
-                  <SelectItem value="Milan Via Montenapoleone">Milan Via Montenapoleone</SelectItem>
-                  <SelectItem value="Tokyo Ginza">Tokyo Ginza</SelectItem>
-                  <SelectItem value="Hong Kong Canton Road">Hong Kong Canton Road</SelectItem>
-                  <SelectItem value="Dubai Mall">Dubai Mall</SelectItem>
-                  <SelectItem value="Los Angeles Rodeo Drive">Los Angeles Rodeo Drive</SelectItem>
-                  <SelectItem value="Shanghai IFC Mall">Shanghai IFC Mall</SelectItem>
-                  <SelectItem value="Madrid Serrano">Madrid Serrano</SelectItem>
-                  <SelectItem value="Online Store">Online Store</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="date-range">Date Range</Label>
-              <Select value={dateRange} onValueChange={setDateRange}>
-                <SelectTrigger id="date-range">
-                  <SelectValue placeholder="Select Date Range" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="today">Today</SelectItem>
-                  <SelectItem value="yesterday">Yesterday</SelectItem>
-                  <SelectItem value="this-week">This Week</SelectItem>
-                  <SelectItem value="last-week">Last Week</SelectItem>
-                  <SelectItem value="this-month">This Month</SelectItem>
-                  <SelectItem value="last-month">Last Month</SelectItem>
-                  <SelectItem value="custom">Custom Range</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label>Export Format</Label>
-              <Tabs defaultValue="pdf" value={exportFormat} onValueChange={setExportFormat}>
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="pdf">PDF</TabsTrigger>
-                  <TabsTrigger value="excel">Excel</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Export Report</DialogTitle>
+          <DialogDescription>
+            Select the report type, date range, and format for export.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="reportType" className="text-right">
+              Report Type
+            </Label>
+            <Select
+              value={reportType}
+              onValueChange={(value) => setReportType(value as ReportType)}
+            >
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select report type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="sales">Sales Report</SelectItem>
+                <SelectItem value="reconciliation">Reconciliation</SelectItem>
+                <SelectItem value="products">Products</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <DialogFooter className="sm:justify-end">
-            <Button
-              type="button"
-              variant="outline"
-              className="border-lv-brown text-lv-brown"
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="format" className="text-right">
+              Format
+            </Label>
+            <Select
+              value={exportFormat}
+              onValueChange={(value) => setExportFormat(value as ExportFormat)}
             >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              className="bg-lv-gold hover:bg-lv-gold/90 text-black"
-              onClick={handleExport}
-            >
-              Export
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select format" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pdf">PDF</SelectItem>
+                <SelectItem value="csv">CSV</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="startDate" className="text-right">
+              Start Date
+            </Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "col-span-3 justify-start text-left font-normal",
+                    !startDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={startDate}
+                  onSelect={setStartDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="endDate" className="text-right">
+              End Date
+            </Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "col-span-3 justify-start text-left font-normal",
+                    !endDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={endDate}
+                  onSelect={setEndDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button onClick={handleExport}>
+            <DownloadIcon className="mr-2 h-4 w-4" />
+            Export
+          </Button>
+        </DialogFooter>
+      </DialogContent>
       {showPDFPreview && renderPDFPreview()}
-    </>
+    </Dialog>
   );
 }

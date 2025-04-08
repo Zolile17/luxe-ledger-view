@@ -29,17 +29,20 @@ import {
   AlertCircleIcon,
   DollarSignIcon,
   BarChartIcon,
-  StoreIcon
+  StoreIcon,
+  FileDownIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { 
-  products, 
+  products as initialProducts, 
   categories, 
   getProductMetrics,
   type Product,
   type Category
 } from "@/data/productData";
 import { AddStoreDialog } from "@/components/Dashboard/AddStoreDialog";
+import { ExportReportDialog } from "@/components/Dashboard/ExportReportDialog";
+import { AddProductDialog } from "@/components/Dashboard/AddProductDialog";
 
 interface Store {
   id: string;
@@ -55,6 +58,7 @@ export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStore, setSelectedStore] = useState("All Stores");
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [stores, setStores] = useState<Store[]>([
     {
       id: "s1",
@@ -110,6 +114,24 @@ export default function ProductsPage() {
       totalSales: 0,
     };
     setStores([...stores, store]);
+  };
+
+  const handleProductAdded = (newProduct: Omit<Product, "id" | "sales" | "status" | "lastUpdated">) => {
+    const product: Product = {
+      ...newProduct,
+      id: `p${products.length + 1}`,
+      sales: 0,
+      status: newProduct.stock > 0 ? "active" : "out_of_stock",
+      lastUpdated: new Date().toISOString().split('T')[0]
+    };
+    setProducts([...products, product]);
+  };
+
+  const formatCurrency = (value: number): string => {
+    return new Intl.NumberFormat('en-ZA', {
+      style: 'currency',
+      currency: 'ZAR',
+    }).format(value);
   };
 
   return (
@@ -247,10 +269,16 @@ export default function ProductsPage() {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button size="sm" className="bg-lv-gold hover:bg-lv-gold/90 text-black">
-                <PlusIcon className="mr-2 h-4 w-4" />
-                Add Product
-              </Button>
+              <AddProductDialog onProductAdded={handleProductAdded} categories={categories} />
+              <ExportReportDialog 
+                trigger={
+                  <Button variant="outline">
+                    <FileDownIcon className="h-4 w-4 mr-2" />
+                    Export
+                  </Button>
+                }
+                selectedStore={selectedStore}
+              />
             </div>
           </CardHeader>
           <CardContent className="pt-4 px-0">
@@ -324,11 +352,4 @@ export default function ProductsPage() {
       </div>
     </DashboardLayout>
   );
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('en-ZA', {
-    style: 'currency',
-    currency: 'ZAR',
-  }).format(value);
 } 
