@@ -1,59 +1,64 @@
 import { DashboardLayout } from "@/components/Dashboard/DashboardLayout";
 import { MetricCard } from "@/components/Dashboard/MetricCard";
 import { RevenueChart } from "@/components/Dashboard/RevenueChart";
-import { ActivityFeed } from "@/components/Dashboard/ActivityFeed";
+import { TransactionsTable } from "@/components/Dashboard/TransactionsTable";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { Button } from "@/components/ui/button";
 import { DownloadIcon, FilterIcon, CircleDollarSignIcon, BarChart3Icon, ShoppingBagIcon, UsersIcon } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { isWithinInterval, parseISO } from "date-fns";
-import { getRevenueData } from "@/data/dashboardData";
-import { activitiesData } from "@/data/dashboardData";
+import { getStoreData, getRevenueData, getTransactionsByStore } from "@/data/dashboardData";
 import { DateRange } from "react-day-picker";
 
 export default function OverviewPage() {
   const [dateRange, setDateRange] = useState<DateRange>({
-    from: new Date("2024-01-01"),
-    to: new Date("2024-01-14"),
+    from: new Date("2025-03-01"),
+    to: new Date("2025-03-14"),
   });
+  const [selectedStore, setSelectedStore] = useState("All Stores");
+  const [storeMetrics, setStoreMetrics] = useState(getStoreData(selectedStore));
+  const [revenueData, setRevenueData] = useState(getRevenueData(selectedStore));
+  const [filteredTransactions, setFilteredTransactions] = useState(getTransactionsByStore(selectedStore));
 
-  const allRevenueData = getRevenueData("All Stores");
-  const filteredRevenueData = allRevenueData.filter((item) => {
+  useEffect(() => {
+    setStoreMetrics(getStoreData(selectedStore));
+    setRevenueData(getRevenueData(selectedStore));
+    setFilteredTransactions(getTransactionsByStore(selectedStore));
+  }, [selectedStore]);
+
+  const filteredRevenueData = revenueData.filter((item) => {
     const itemDate = parseISO(item.date);
-    return isWithinInterval(itemDate, { start: dateRange.from!, end: dateRange.to! });
+    return dateRange.from && dateRange.to 
+      ? isWithinInterval(itemDate, { start: dateRange.from, end: dateRange.to })
+      : true;
   });
 
   const totalRevenue = filteredRevenueData.reduce((sum, item) => sum + item.revenue, 0);
-  const totalSales = filteredRevenueData.length;
-  const averageOrder = totalRevenue / totalSales;
-  const newCustomers = Math.floor(totalSales * 0.2); // Assuming 20% of sales are from new customers
+  const totalSales = storeMetrics.salesCount;
+  const averageOrder = storeMetrics.averageOrder;
+  const newCustomers = storeMetrics.newCustomers;
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      title="Dashboard Overview"
+      description="Welcome to your luxury retail dashboard"
+      selectedStore={selectedStore}
+      onStoreChange={setSelectedStore}
+    >
       <div className="animate-fade-in">
-        <div className="mb-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-serif font-medium text-lv-brown">
-              Dashboard Overview
-            </h1>
-            <p className="text-muted-foreground">
-              Welcome to your luxury retail dashboard
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <DateRangePicker
-              value={dateRange}
-              onChange={setDateRange}
-            />
-            <Button variant="outline">
-              <FilterIcon className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
-            <Button className="bg-lv-gold hover:bg-lv-gold/90 text-black">
-              <DownloadIcon className="h-4 w-4 mr-2" />
-              Export
-            </Button>
-          </div>
+        <div className="flex items-center gap-2 mb-8">
+          <DateRangePicker
+            value={dateRange}
+            onChange={setDateRange}
+          />
+          <Button variant="outline">
+            <FilterIcon className="h-4 w-4 mr-2" />
+            Filter
+          </Button>
+          <Button className="bg-lv-gold hover:bg-lv-gold/90 text-black">
+            <DownloadIcon className="h-4 w-4 mr-2" />
+            Export
+          </Button>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -87,9 +92,9 @@ export default function OverviewPage() {
           />
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 mt-4">
+        <div className="grid gap-4 mt-4">
           <RevenueChart data={filteredRevenueData} />
-          <ActivityFeed activities={activitiesData} />
+          <TransactionsTable transactions={filteredTransactions} />
         </div>
       </div>
     </DashboardLayout>

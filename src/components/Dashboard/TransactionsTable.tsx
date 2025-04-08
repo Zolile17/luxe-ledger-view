@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +20,9 @@ import {
   CheckIcon, 
   ChevronDownIcon, 
   FilterIcon, 
-  SearchIcon 
+  SearchIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -44,6 +45,8 @@ interface TransactionsTableProps {
 export function TransactionsTable({ transactions, className }: TransactionsTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   const filteredTransactions = transactions.filter((transaction) => {
     const matchesSearch =
@@ -55,6 +58,12 @@ export function TransactionsTable({ transactions, className }: TransactionsTable
     
     return matchesSearch && matchesStatus;
   });
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentTransactions = filteredTransactions.slice(startIndex, endIndex);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -127,14 +136,14 @@ export function TransactionsTable({ transactions, className }: TransactionsTable
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredTransactions.length === 0 ? (
+              {currentTransactions.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
                     No transactions found.
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredTransactions.map((transaction) => (
+                currentTransactions.map((transaction) => (
                   <TableRow key={transaction.id} className="group hover:bg-muted/30">
                     <TableCell className="font-medium">{transaction.productName}</TableCell>
                     <TableCell>{transaction.customer}</TableCell>
@@ -156,6 +165,30 @@ export function TransactionsTable({ transactions, className }: TransactionsTable
               )}
             </TableBody>
           </Table>
+        </div>
+        {/* Pagination Controls */}
+        <div className="flex items-center justify-between px-4 py-3 border-t">
+          <div className="text-sm text-muted-foreground">
+            Showing {startIndex + 1} to {Math.min(endIndex, filteredTransactions.length)} of {filteredTransactions.length} transactions
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeftIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              <ChevronRightIcon className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

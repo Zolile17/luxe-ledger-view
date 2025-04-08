@@ -1,0 +1,61 @@
+import { DashboardLayout } from "@/components/Dashboard/DashboardLayout";
+import { ReconciliationTable } from "@/components/Dashboard/ReconciliationTable";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { Button } from "@/components/ui/button";
+import { DownloadIcon, FilterIcon } from "lucide-react";
+import { useState } from "react";
+import { DateRange } from "react-day-picker";
+import { getTransactionsByStore } from "@/data/dashboardData";
+
+export default function ReconciliationPage() {
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: new Date(2025, 2, 1),
+    to: new Date(2025, 2, 14),
+  });
+  const [selectedStore, setSelectedStore] = useState("All Stores");
+
+  const filteredTransactions = getTransactionsByStore(selectedStore);
+
+  const formatCurrency = (value: number): string => {
+    return new Intl.NumberFormat('en-ZA', {
+      style: 'currency',
+      currency: 'ZAR',
+    }).format(value);
+  };
+
+  return (
+    <DashboardLayout
+      title="Reconciliation"
+      description="Review and reconcile transactions across all stores"
+      selectedStore={selectedStore}
+      onStoreChange={setSelectedStore}
+    >
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <DateRangePicker
+              value={dateRange}
+              onChange={setDateRange}
+              className="w-[300px]"
+            />
+            <Button variant="outline" size="sm">
+              <FilterIcon className="mr-2 h-4 w-4" />
+              Filter
+            </Button>
+          </div>
+          <Button variant="outline" size="sm">
+            <DownloadIcon className="mr-2 h-4 w-4" />
+            Export
+          </Button>
+        </div>
+
+        <div className="grid gap-4">
+          <ReconciliationTable 
+            transactions={filteredTransactions}
+            formatCurrency={formatCurrency}
+          />
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+} 

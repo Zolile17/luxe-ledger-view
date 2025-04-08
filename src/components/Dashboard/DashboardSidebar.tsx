@@ -17,9 +17,9 @@ import {
   StoreIcon,
   UserIcon
 } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { useNavigate } from "react-router-dom";
 
 interface SidebarItemProps {
   icon: React.ReactNode;
@@ -71,8 +71,9 @@ interface DashboardSidebarProps {
 }
 
 export function DashboardSidebar({ className, expanded }: DashboardSidebarProps) {
-  const [activeItem, setActiveItem] = useState("dashboard");
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   const handleLogout = () => {
     // TODO: Implement actual logout logic (clear tokens, etc.)
@@ -80,8 +81,12 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
   };
 
   const handleNavigation = (path: string) => {
-    setActiveItem(path);
     navigate(`/dashboard/${path}`);
+  };
+
+  const isActive = (path: string) => {
+    return currentPath === `/dashboard/${path}` || 
+           (path === "" && currentPath === "/dashboard");
   };
 
   return (
@@ -113,21 +118,21 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
           <SidebarItem 
             icon={<LayoutDashboardIcon className="h-4 w-4" />} 
             label="Dashboard Overview" 
-            active={activeItem === "dashboard"}
+            active={isActive("")}
             onClick={() => handleNavigation("")}
             expanded={expanded}
           />
           <SidebarItem 
             icon={<BarChart3Icon className="h-4 w-4" />} 
             label="Sales Reports" 
-            active={activeItem === "sales"}
+            active={isActive("sales")}
             onClick={() => handleNavigation("sales")}
             expanded={expanded}
           />
           <SidebarItem 
             icon={<CircleDollarSignIcon className="h-4 w-4" />} 
             label="Reconciliation" 
-            active={activeItem === "reconciliation"}
+            active={isActive("reconciliation")}
             onClick={() => handleNavigation("reconciliation")}
             expanded={expanded}
           />
@@ -146,22 +151,22 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
           <SidebarItem 
             icon={<PackageIcon className="h-4 w-4" />} 
             label="Products & Categories" 
-            active={activeItem === "products"}
-            onClick={() => setActiveItem("products")}
+            active={isActive("products")}
+            onClick={() => handleNavigation("products")}
             expanded={expanded}
           />
           <SidebarItem 
             icon={<StoreIcon className="h-4 w-4" />} 
             label="Store Performance" 
-            active={activeItem === "stores"}
-            onClick={() => setActiveItem("stores")}
+            active={isActive("stores")}
+            onClick={() => handleNavigation("stores")}
             expanded={expanded}
           />
           <SidebarItem 
             icon={<FileTextIcon className="h-4 w-4" />} 
             label="Export Reports" 
-            active={activeItem === "export"}
-            onClick={() => setActiveItem("export")}
+            active={isActive("export")}
+            onClick={() => handleNavigation("export")}
             expanded={expanded}
           />
         </nav>
@@ -173,15 +178,15 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
           <SidebarItem 
             icon={<UserIcon className="h-4 w-4" />} 
             label="Profile" 
-            active={activeItem === "profile"}
-            onClick={() => setActiveItem("profile")}
+            active={isActive("profile")}
+            onClick={() => handleNavigation("profile")}
             expanded={expanded}
           />
           <SidebarItem 
             icon={<SettingsIcon className="h-4 w-4" />} 
             label="Settings" 
-            active={activeItem === "settings"}
-            onClick={() => setActiveItem("settings")}
+            active={isActive("settings")}
+            onClick={() => handleNavigation("settings")}
             expanded={expanded}
           />
           <SidebarItem 
