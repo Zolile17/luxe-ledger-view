@@ -2,7 +2,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 
 export function RegisterForm() {
@@ -35,10 +42,12 @@ export function RegisterForm() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-serif text-lv-brown">Create Account</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-2xl font-serif text-lv-brown flex justify-center">
+          Create Account
+        </CardTitle>
+        {/* <CardDescription>
           Enter your details to create a new account
-        </CardDescription>
+        </CardDescription> */}
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
@@ -86,12 +95,13 @@ export function RegisterForm() {
               className="border-lv-brown"
             />
           </div>
-          {error && (
-            <p className="text-sm text-red-500">{error}</p>
-          )}
+          {error && <p className="text-sm text-red-500">{error}</p>}
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
-          <Button type="submit" className="w-full bg-lv-gold hover:bg-lv-gold/90 text-black">
+          <Button
+            type="submit"
+            className="w-full bg-lv-gold hover:bg-lv-gold/90 text-black"
+          >
             Create Account
           </Button>
           <p className="text-sm text-center text-muted-foreground">
@@ -108,4 +118,4 @@ export function RegisterForm() {
       </form>
     </Card>
   );
-} 
+}
