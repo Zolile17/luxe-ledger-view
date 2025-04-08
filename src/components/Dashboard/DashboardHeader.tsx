@@ -38,6 +38,9 @@ interface DashboardHeaderProps {
   sidebarExpanded?: boolean;
   isMobile?: boolean;
   onStoreChange?: (store: string) => void;
+  hideStoreSelector?: boolean;
+  title?: string;
+  description?: string;
 }
 
 export function DashboardHeader({
@@ -46,6 +49,9 @@ export function DashboardHeader({
   sidebarExpanded,
   isMobile,
   onStoreChange,
+  hideStoreSelector = false,
+  title,
+  description
 }: DashboardHeaderProps) {
   const [selectedStore, setSelectedStore] = useState("All Stores");
   const [userRole, setUserRole] = useState("admin"); // admin or store-manager
@@ -96,13 +102,18 @@ export function DashboardHeader({
         )}
         {/* Only show logo in header when sidebar is collapsed or on mobile */}
         {(isMobile || !sidebarExpanded) && <LvLogo size="lg" />}
+        <div>
+          <h1 className="text-2xl font-bold">{title}</h1>
+          <p className="text-sm text-muted-foreground">{description}</p>
+        </div>
       </div>
+
       <div className="flex items-center space-x-4">
-        <div className="hidden sm:block">
+        {!hideStoreSelector && (
           <Select value={selectedStore} onValueChange={handleStoreChange}>
-            <SelectTrigger className="w-[180px] bg-muted/50 border-0 focus:ring-lv-gold">
-              <StoreIcon className="h-4 w-4 mr-2 text-lv-gold" />
-              <SelectValue placeholder="Select Store" />
+            <SelectTrigger className="w-[200px]">
+              <StoreIcon className="mr-2 h-4 w-4" />
+              <SelectValue placeholder="Select a store" />
             </SelectTrigger>
             <SelectContent>
               {storeLocations.map((store) => (
@@ -112,67 +123,47 @@ export function DashboardHeader({
               ))}
             </SelectContent>
           </Select>
-        </div>
+        )}
 
-        <div className="hidden sm:flex items-center bg-muted rounded-full px-3 py-1.5 ml-2">
-          <SearchIcon className="h-4 w-4 text-muted-foreground mr-2" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent border-none outline-none text-sm w-40 placeholder:text-muted-foreground"
-          />
-        </div>
+        <Button variant="ghost" size="icon">
+          <SearchIcon className="h-5 w-5" />
+        </Button>
 
-        <Button variant="outline" size="icon" className="relative">
+        <Button variant="ghost" size="icon">
           <BellIcon className="h-5 w-5" />
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[10px] flex items-center justify-center">
-            3
-          </span>
         </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full h-8 w-8 overflow-hidden"
-            >
-              <Avatar>
-                <AvatarImage src="/public/images/user-profile.png" alt="User" />
-                <AvatarFallback className="bg-lv-brown text-primary-foreground">
-                  LV
-                </AvatarFallback>
+            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src="/avatars/01.png" alt="@user" />
+                <AvatarFallback>U</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuContent className="w-56" align="end" forceMount>
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">User</p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {userRole === "admin" ? "Administrator" : "Store Manager"}
+                </p>
+              </div>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
-              <UserIcon className="mr-2 h-4 w-4">
-                <img
-                  src="/images/user-profile.png"
-                  alt="user profile"
-                  width={50}
-                  height={50}
-                />
-              </UserIcon>
+            <DropdownMenuItem>
+              <UserIcon className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem>
               <SettingsIcon className="mr-2 h-4 w-4" />
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-xs text-muted-foreground">
-              {userRole === "admin"
-                ? "Regional Admin / Head Office"
-                : "Store Manager"}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer text-red-600">
+            <DropdownMenuItem>
               <LogOutIcon className="mr-2 h-4 w-4" />
-              <span onClick={handleLogout}>Logout</span>
+              <span>Log out</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

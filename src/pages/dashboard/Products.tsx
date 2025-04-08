@@ -1,131 +1,324 @@
+import { useState } from "react";
 import { DashboardLayout } from "@/components/Dashboard/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { MetricCard } from "@/components/Dashboard/MetricCard";
 import { Button } from "@/components/ui/button";
-import { PlusIcon, FilterIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { 
+  SearchIcon, 
+  FilterIcon, 
+  ChevronDownIcon,
+  PlusIcon,
+  PackageIcon,
+  ShoppingBagIcon,
+  AlertCircleIcon,
+  DollarSignIcon,
+  BarChartIcon,
+  StoreIcon
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { 
+  products, 
+  categories, 
+  getProductMetrics,
+  type Product,
+  type Category
+} from "@/data/productData";
+import { AddStoreDialog } from "@/components/Dashboard/AddStoreDialog";
 
-// Mock data for products
-const products = [
-  {
-    id: "P001",
-    name: "Neverfull MM Tote",
-    category: "Handbags",
-    price: 1650,
-    stock: 24,
-    status: "In Stock"
-  },
-  {
-    id: "P002",
-    name: "Speedy 30 Handbag",
-    category: "Handbags",
-    price: 1350,
-    stock: 12,
-    status: "Low Stock"
-  },
-  {
-    id: "P003",
-    name: "Monogram Shawl",
-    category: "Accessories",
-    price: 490,
-    stock: 45,
-    status: "In Stock"
-  },
-  {
-    id: "P004",
-    name: "Horizon 55 Luggage",
-    category: "Luggage",
-    price: 2800,
-    stock: 8,
-    status: "Low Stock"
-  },
-  {
-    id: "P005",
-    name: "Tambour Watch",
-    category: "Watches",
-    price: 4950,
-    stock: 15,
-    status: "In Stock"
-  },
-  {
-    id: "P006",
-    name: "Capucines MM Bag",
-    category: "Handbags",
-    price: 4650,
-    stock: 6,
-    status: "Low Stock"
-  },
-  {
-    id: "P007",
-    name: "LV Archlight Sneakers",
-    category: "Shoes",
-    price: 1090,
-    stock: 32,
-    status: "In Stock"
-  }
-];
+interface Store {
+  id: string;
+  name: string;
+  location: string;
+  description: string;
+  productCount: number;
+  totalSales: number;
+}
 
 export default function ProductsPage() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedStore, setSelectedStore] = useState("All Stores");
+  const [stores, setStores] = useState<Store[]>([
+    {
+      id: "s1",
+      name: "Sandton City",
+      location: "Johannesburg",
+      description: "Flagship store in Sandton City Mall",
+      productCount: 120,
+      totalSales: 2500000,
+    },
+    {
+      id: "s2",
+      name: "V&A Waterfront",
+      location: "Cape Town",
+      description: "Premium store in V&A Waterfront",
+      productCount: 95,
+      totalSales: 1800000,
+    },
+  ]);
+  const itemsPerPage = 5;
+
+  const metrics = getProductMetrics();
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === null || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentProducts = filteredProducts.slice(startIndex, endIndex);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "active":
+        return "bg-emerald-100 text-emerald-800 hover:bg-emerald-100/80";
+      case "out_of_stock":
+        return "bg-amber-100 text-amber-800 hover:bg-amber-100/80";
+      case "discontinued":
+        return "bg-red-100 text-red-800 hover:bg-red-100/80";
+      default:
+        return "";
+    }
+  };
+
+  const handleStoreAdded = (newStore: Omit<Store, "id" | "productCount" | "totalSales">) => {
+    const store: Store = {
+      ...newStore,
+      id: `s${stores.length + 1}`,
+      productCount: 0,
+      totalSales: 0,
+    };
+    setStores([...stores, store]);
+  };
+
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      title="Products & Categories"
+      description="Manage your product catalog and categories"
+      selectedStore={selectedStore}
+      onStoreChange={setSelectedStore}
+    >
       <div className="animate-fade-in">
-        <div className="mb-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-serif font-medium text-lv-brown">
-              Products & Categories
-            </h1>
-            <p className="text-muted-foreground">
-              Manage your product inventory and categories
-            </p>
-          </div>
-          <Button className="bg-lv-gold hover:bg-lv-gold/90 text-black">
-            <PlusIcon className="h-4 w-4 mr-2" />
-            Add Product
-          </Button>
+        {/* Metrics Section */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+          <MetricCard
+            title="Total Products"
+            value={metrics.totalProducts.toString()}
+            change={8.2}
+            changeText="vs last month"
+            icon={<PackageIcon className="h-4 w-4" />}
+          />
+          <MetricCard
+            title="Total Stock"
+            value={metrics.totalStock.toString()}
+            change={-3.1}
+            changeText="vs last month"
+            icon={<ShoppingBagIcon className="h-4 w-4" />}
+          />
+          <MetricCard
+            title="Out of Stock"
+            value={metrics.outOfStock.toString()}
+            change={2.5}
+            changeText="vs last month"
+            icon={<AlertCircleIcon className="h-4 w-4" />}
+          />
+          <MetricCard
+            title="Average Price"
+            value={formatCurrency(metrics.averagePrice)}
+            change={5.7}
+            changeText="vs last month"
+            icon={<DollarSignIcon className="h-4 w-4" />}
+          />
         </div>
 
+        {/* Stores Section */}
+        <Card className="mb-6">
+          <CardHeader className="pb-2 flex flex-row items-center justify-between">
+            <CardTitle className="text-lg font-medium">Stores</CardTitle>
+            <AddStoreDialog onStoreAdded={handleStoreAdded} />
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {stores.map((store) => (
+                <Card key={store.id} className="group cursor-pointer hover:shadow-lg transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-2">
+                        <StoreIcon className="h-5 w-5 text-muted-foreground" />
+                        <h3 className="font-semibold">{store.name}</h3>
+                      </div>
+                      <Badge variant="outline">{store.location}</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4">{store.description}</p>
+                    <div className="flex justify-between text-sm">
+                      <div>
+                        <p className="font-medium">{store.productCount}</p>
+                        <p className="text-muted-foreground">Products</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-medium">{formatCurrency(store.totalSales)}</p>
+                        <p className="text-muted-foreground">Total Sales</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Categories Section */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+          {categories.map((category) => (
+            <Card key={category.id} className="group cursor-pointer hover:shadow-lg transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold">{category.name}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {category.productCount} products
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold">{formatCurrency(category.totalSales)}</p>
+                    <p className="text-sm text-muted-foreground">Total Sales</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Products Section */}
         <Card>
-          <CardHeader className="pb-2">
-            <div className="flex justify-between items-center">
-              <CardTitle className="text-lg font-medium">Product Inventory</CardTitle>
-              <Button variant="outline" size="sm">
-                <FilterIcon className="h-4 w-4 mr-2" />
-                Filter
+          <CardHeader className="pb-2 flex flex-row items-center justify-between">
+            <CardTitle className="text-lg font-medium">Products</CardTitle>
+            <div className="flex items-center space-x-2">
+              <div className="relative">
+                <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search products..."
+                  className="pl-8 max-w-xs"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="flex items-center">
+                    <FilterIcon className="mr-2 h-4 w-4" />
+                    Category
+                    <ChevronDownIcon className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setSelectedCategory(null)}>
+                    All Categories
+                  </DropdownMenuItem>
+                  {categories.map((category) => (
+                    <DropdownMenuItem
+                      key={category.id}
+                      onClick={() => setSelectedCategory(category.name)}
+                    >
+                      {category.name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button size="sm" className="bg-lv-gold hover:bg-lv-gold/90 text-black">
+                <PlusIcon className="mr-2 h-4 w-4" />
+                Add Product
               </Button>
             </div>
           </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Stock</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {products.map((product) => (
-                  <TableRow key={product.id}>
-                    <TableCell>{product.id}</TableCell>
-                    <TableCell>{product.name}</TableCell>
-                    <TableCell>{product.category}</TableCell>
-                    <TableCell>{formatCurrency(product.price)}</TableCell>
-                    <TableCell>{product.stock}</TableCell>
-                    <TableCell>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        product.status === "In Stock" 
-                          ? "bg-green-100 text-green-800" 
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}>
-                        {product.status}
-                      </span>
-                    </TableCell>
+          <CardContent className="pt-4 px-0">
+            <div className="border rounded-md">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/50 hover:bg-muted/50">
+                    <TableHead>Product</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Stock</TableHead>
+                    <TableHead>Sales</TableHead>
+                    <TableHead>Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {currentProducts.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
+                        No products found.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    currentProducts.map((product) => (
+                      <TableRow key={product.id} className="group hover:bg-muted/30">
+                        <TableCell className="font-medium">{product.name}</TableCell>
+                        <TableCell>{product.category}</TableCell>
+                        <TableCell>{formatCurrency(product.price)}</TableCell>
+                        <TableCell>{product.stock}</TableCell>
+                        <TableCell>{product.sales}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant="outline"
+                            className={cn("capitalize", getStatusColor(product.status))}
+                          >
+                            {product.status.replace("_", " ")}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+            {/* Pagination Controls */}
+            <div className="flex items-center justify-between px-4 py-3 border-t">
+              <div className="text-sm text-muted-foreground">
+                Showing {startIndex + 1} to {Math.min(endIndex, filteredProducts.length)} of {filteredProducts.length} products
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -134,8 +327,8 @@ export default function ProductsPage() {
 }
 
 function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-ZA', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'ZAR',
   }).format(value);
 } 

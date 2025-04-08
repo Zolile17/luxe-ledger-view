@@ -158,8 +158,8 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
           <SidebarItem 
             icon={<StoreIcon className="h-4 w-4" />} 
             label="Store Performance" 
-            active={isActive("stores")}
-            onClick={() => handleNavigation("stores")}
+            active={isActive("store-performance")}
+            onClick={() => handleNavigation("store-performance")}
             expanded={expanded}
           />
           <SidebarItem 

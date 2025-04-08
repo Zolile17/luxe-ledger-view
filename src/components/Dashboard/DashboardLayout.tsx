@@ -12,6 +12,7 @@ interface DashboardLayoutProps {
   description: string;
   selectedStore: string;
   onStoreChange: (store: string) => void;
+  hideStoreSelector?: boolean;
 }
 
 export function DashboardLayout({
@@ -20,6 +21,7 @@ export function DashboardLayout({
   description,
   selectedStore,
   onStoreChange,
+  hideStoreSelector = false,
 }: DashboardLayoutProps) {
   const isMobile = useIsMobile();
   const [sidebarExpanded, setSidebarExpanded] = useState(!isMobile);
@@ -59,23 +61,21 @@ export function DashboardLayout({
 
       {/* Main content */}
       <div className={cn(
-        "flex flex-col flex-1 overflow-hidden transition-all duration-300 w-full",
-        !isMobile && (sidebarExpanded ? "ml-64" : "ml-16")
+        "flex-1 flex flex-col overflow-hidden",
+        sidebarExpanded ? "ml-64" : "ml-16"
       )}>
         <DashboardHeader 
-          toggleSidebar={toggleSidebar}
-          sidebarExpanded={sidebarExpanded} 
-          isMobile={isMobile}
+          title={title}
+          description={description}
+          selectedStore={selectedStore}
           onStoreChange={onStoreChange}
+          toggleSidebar={toggleSidebar}
+          sidebarExpanded={sidebarExpanded}
+          isMobile={isMobile}
+          hideStoreSelector={hideStoreSelector}
         />
-        <main className="flex-1 overflow-y-auto w-full">
-          <div className="w-full h-full px-4 py-6 sm:px-6 lg:px-8">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-              <p className="text-muted-foreground">{description}</p>
-            </div>
-            {children}
-          </div>
+        <main className="flex-1 overflow-y-auto p-6">
+          {children}
         </main>
       </div>
 
