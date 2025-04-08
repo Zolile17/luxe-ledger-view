@@ -1,8 +1,20 @@
 import { DashboardLayout } from "@/components/Dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon, FilterIcon, FileDownIcon } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { FilterIcon, FileDownIcon } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { useState } from "react";
 import { addDays } from "date-fns";
@@ -20,7 +32,6 @@ export default function SalesPage() {
   const revenueData = getRevenueData(selectedStore);
   const transactions = getTransactionsByStore(selectedStore);
 
-  // Calculate top products from transactions
   const topProducts = transactions
     .reduce((acc, transaction) => {
       const existing = acc.find(p => p.name === transaction.productName);
@@ -46,10 +57,12 @@ export default function SalesPage() {
     }).format(value);
   };
 
+  const pieColors = ["#D4AF37", "#b9972c", "#a58326", "#93701f", "#7f5e18"];
+
   return (
     <DashboardLayout
       title="Sales Reports"
-      description="Analyze and track your sales performance"
+      description="Analyse and track your sales performance"
       selectedStore={selectedStore}
       onStoreChange={setSelectedStore}
     >
@@ -60,19 +73,16 @@ export default function SalesPage() {
               Sales Reports
             </h1>
             <p className="text-muted-foreground">
-              Analyze and track your sales performance
+              Overview of daily revenue and top performing products
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <DateRangePicker
-              value={dateRange}
-              onChange={setDateRange}
-            />
+            <DateRangePicker value={dateRange} onChange={setDateRange} />
             <Button variant="outline">
               <FilterIcon className="h-4 w-4 mr-2" />
               Filter
             </Button>
-            <ExportReportDialog 
+            <ExportReportDialog
               trigger={
                 <Button className="bg-lv-gold hover:bg-lv-gold/90 text-black">
                   <FileDownIcon className="h-4 w-4 mr-2" />
@@ -84,7 +94,9 @@ export default function SalesPage() {
           </div>
         </div>
 
+        {/* Top Row */}
         <div className="grid gap-4 md:grid-cols-2 mt-4">
+          {/* Daily Sales Bar Chart */}
           <Card>
             <CardHeader>
               <CardTitle>Daily Sales</CardTitle>
@@ -95,8 +107,8 @@ export default function SalesPage() {
                   <BarChart data={revenueData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
+                    <YAxis tickFormatter={(value) => `R${(value / 1000).toFixed(0)}k`} />
+                    <Tooltip formatter={(value: number) => formatCurrency(value)} />
                     <Bar dataKey="revenue" fill="#D4AF37" />
                   </BarChart>
                 </ResponsiveContainer>
@@ -104,6 +116,7 @@ export default function SalesPage() {
             </CardContent>
           </Card>
 
+          {/* Top Products List */}
           <Card>
             <CardHeader>
               <CardTitle>Top Products</CardTitle>
@@ -121,7 +134,12 @@ export default function SalesPage() {
                     <div className="text-right">
                       <p className="font-medium">{formatCurrency(product.sales)}</p>
                       <p className="text-sm text-muted-foreground">
-                        {((product.sales / topProducts.reduce((sum, p) => sum + p.sales, 0)) * 100).toFixed(1)}% of total
+                        {(
+                          (product.sales /
+                            topProducts.reduce((sum, p) => sum + p.sales, 0)) *
+                          100
+                        ).toFixed(1)}
+                        % of total
                       </p>
                     </div>
                   </div>
@@ -130,7 +148,47 @@ export default function SalesPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Bottom Row: Pie Chart */}
+        <div className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Product Sales Distribution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[300px] flex justify-center items-center">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={topProducts}
+                      dataKey="sales"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      fill="#D4AF37"
+                    >
+                      {topProducts.map((_, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={pieColors[index % pieColors.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      formatter={(value: number, name: string) =>
+                        [`${formatCurrency(value)}`, name]
+                      }
+                    />
+                    {/* Legend only, no labels */}
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </DashboardLayout>
   );
-} 
+}
