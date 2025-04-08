@@ -6,23 +6,61 @@ import {
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { BellIcon, LogOutIcon, SearchIcon, SettingsIcon, UserIcon } from "lucide-react";
+import { 
+  BellIcon, 
+  LogOutIcon, 
+  SearchIcon, 
+  SettingsIcon, 
+  StoreIcon, 
+  UserIcon 
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { useState } from "react";
 
 interface DashboardHeaderProps {
   className?: string;
 }
 
 export function DashboardHeader({ className }: DashboardHeaderProps) {
+  const [selectedStore, setSelectedStore] = useState("all");
+  const [userRole, setUserRole] = useState("admin"); // admin or store-manager
+
+  const handleStoreChange = (value: string) => {
+    setSelectedStore(value);
+  };
+
   return (
     <header className={cn("px-4 sm:px-6 lg:px-8 py-4 border-b border-border flex items-center justify-between bg-background", className)}>
       <div className="flex items-center">
         <LvLogo size="lg" />
       </div>
       <div className="flex items-center space-x-4">
-        <div className="hidden sm:flex items-center bg-muted rounded-full px-3 py-1.5">
+        <div className="hidden sm:block">
+          <Select value={selectedStore} onValueChange={handleStoreChange}>
+            <SelectTrigger className="w-[180px] bg-muted/50 border-0 focus:ring-lv-gold">
+              <StoreIcon className="h-4 w-4 mr-2 text-lv-gold" />
+              <SelectValue placeholder="Select Store" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Stores</SelectItem>
+              <SelectItem value="johannesburg">Johannesburg</SelectItem>
+              <SelectItem value="cape-town">Cape Town</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="hidden sm:flex items-center bg-muted rounded-full px-3 py-1.5 ml-2">
           <SearchIcon className="h-4 w-4 text-muted-foreground mr-2" />
           <input 
             type="text" 
@@ -48,6 +86,8 @@ export function DashboardHeader({ className }: DashboardHeaderProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer">
               <UserIcon className="mr-2 h-4 w-4" />
               <span>Profile</span>
@@ -56,7 +96,12 @@ export function DashboardHeader({ className }: DashboardHeaderProps) {
               <SettingsIcon className="mr-2 h-4 w-4" />
               <span>Settings</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="text-xs text-muted-foreground">
+              {userRole === "admin" ? "Regional Admin / Head Office" : "Store Manager"}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="cursor-pointer text-red-600">
               <LogOutIcon className="mr-2 h-4 w-4" />
               <span>Logout</span>
             </DropdownMenuItem>

@@ -5,16 +5,18 @@ import { Separator } from "@/components/ui/separator";
 import { LvLogo } from "./LvLogo";
 import { 
   BarChart3Icon, 
-  BoxIcon, 
-  CreditCardIcon, 
+  CalendarIcon,
+  CircleDollarSignIcon,
+  FileBarChartIcon,
+  FileExportIcon,
   HomeIcon, 
   LayoutDashboardIcon, 
   LogOutIcon, 
-  PieChartIcon, 
-  SettingsIcon, 
+  PackageIcon,
+  SettingsIcon,
   ShoppingBagIcon, 
-  UserIcon, 
-  UsersIcon 
+  StoreIcon,
+  UserIcon
 } from "lucide-react";
 import { useState } from "react";
 
@@ -63,26 +65,26 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
       
       <div className="px-3 py-2">
         <p className="text-xs uppercase font-medium text-sidebar-foreground/50 mb-2 pl-3">
-          General
+          Main Menu
         </p>
         <nav className="space-y-0.5">
           <SidebarItem 
             icon={<LayoutDashboardIcon className="h-4 w-4" />} 
-            label="Dashboard" 
+            label="Dashboard Overview" 
             active={activeItem === "dashboard"}
             onClick={() => setActiveItem("dashboard")}
           />
           <SidebarItem 
             icon={<BarChart3Icon className="h-4 w-4" />} 
-            label="Analytics" 
-            active={activeItem === "analytics"}
-            onClick={() => setActiveItem("analytics")}
+            label="Sales Reports" 
+            active={activeItem === "sales"}
+            onClick={() => setActiveItem("sales")}
           />
           <SidebarItem 
-            icon={<CreditCardIcon className="h-4 w-4" />} 
-            label="Transactions" 
-            active={activeItem === "transactions"}
-            onClick={() => setActiveItem("transactions")}
+            icon={<CircleDollarSignIcon className="h-4 w-4" />} 
+            label="Reconciliation" 
+            active={activeItem === "reconciliation"}
+            onClick={() => setActiveItem("reconciliation")}
           />
         </nav>
       </div>
@@ -91,48 +93,26 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
 
       <div className="px-3 py-2">
         <p className="text-xs uppercase font-medium text-sidebar-foreground/50 mb-2 pl-3">
-          Inventory
+          Store Management
         </p>
         <nav className="space-y-0.5">
           <SidebarItem 
-            icon={<ShoppingBagIcon className="h-4 w-4" />} 
-            label="Products" 
+            icon={<PackageIcon className="h-4 w-4" />} 
+            label="Products & Categories" 
             active={activeItem === "products"}
             onClick={() => setActiveItem("products")}
           />
           <SidebarItem 
-            icon={<BoxIcon className="h-4 w-4" />} 
-            label="Stock" 
-            active={activeItem === "stock"}
-            onClick={() => setActiveItem("stock")}
-          />
-          <SidebarItem 
-            icon={<PieChartIcon className="h-4 w-4" />} 
-            label="Categories" 
-            active={activeItem === "categories"}
-            onClick={() => setActiveItem("categories")}
-          />
-        </nav>
-      </div>
-
-      <Separator className="my-4 bg-sidebar-border/50" />
-
-      <div className="px-3 py-2">
-        <p className="text-xs uppercase font-medium text-sidebar-foreground/50 mb-2 pl-3">
-          Management
-        </p>
-        <nav className="space-y-0.5">
-          <SidebarItem 
-            icon={<UsersIcon className="h-4 w-4" />} 
-            label="Customers" 
-            active={activeItem === "customers"}
-            onClick={() => setActiveItem("customers")}
-          />
-          <SidebarItem 
-            icon={<HomeIcon className="h-4 w-4" />} 
-            label="Stores" 
+            icon={<StoreIcon className="h-4 w-4" />} 
+            label="Store Performance" 
             active={activeItem === "stores"}
             onClick={() => setActiveItem("stores")}
+          />
+          <SidebarItem 
+            icon={<FileExportIcon className="h-4 w-4" />} 
+            label="Export Reports" 
+            active={activeItem === "export"}
+            onClick={() => setActiveItem("export")}
           />
         </nav>
       </div>
