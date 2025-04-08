@@ -1,4 +1,3 @@
-
 import {
   Dialog,
   DialogContent,
@@ -9,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { FileTextIcon } from "lucide-react"; // Changed from FileExportIcon to FileTextIcon
+import { FileTextIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -20,25 +19,98 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  getStoreData, 
+  getTransactionsByStore,
+  getActivitiesByStore,
+  transactionsData,
+  activitiesData
+} from "@/data/dashboardData";
 
 interface ExportReportDialogProps {
   trigger?: React.ReactNode;
+  selectedStore?: string;
 }
 
-export function ExportReportDialog({ trigger }: ExportReportDialogProps) {
+export function ExportReportDialog({ trigger, selectedStore = "All Stores" }: ExportReportDialogProps) {
   const [reportType, setReportType] = useState("sales");
-  const [store, setStore] = useState("all");
+  const [store, setStore] = useState(selectedStore);
   const [exportFormat, setExportFormat] = useState("pdf");
   const [dateRange, setDateRange] = useState("this-week");
 
   const handleExport = () => {
-    console.log({
-      reportType,
-      store,
-      exportFormat,
-      dateRange,
-    });
-    // Implement actual export functionality here
+    let dataToExport;
+    let fileName;
+    const storeData = getStoreData(store);
+
+    switch (reportType) {
+      case "sales":
+        dataToExport = {
+          totalSales: storeData.revenue[storeData.revenue.length - 1],
+          salesCount: storeData.salesCount,
+          averageOrder: storeData.averageOrder,
+          newCustomers: storeData.newCustomers,
+          revenueData: storeData.revenue
+        };
+        fileName = `sales-report-${store.toLowerCase().replace(/\s+/g, '-')}`;
+        break;
+      case "reconciliation":
+        dataToExport = getTransactionsByStore(store);
+        fileName = `reconciliation-report-${store.toLowerCase().replace(/\s+/g, '-')}`;
+        break;
+      case "products":
+        dataToExport = getActivitiesByStore(store);
+        fileName = `products-report-${store.toLowerCase().replace(/\s+/g, '-')}`;
+        break;
+      default:
+        return;
+    }
+
+    // Convert data to the selected format
+    let exportContent;
+    if (exportFormat === "pdf") {
+      // For PDF, we'll create a text representation
+      exportContent = JSON.stringify(dataToExport, null, 2);
+      const blob = new Blob([exportContent], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${fileName}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } else {
+      // For Excel, we'll create a CSV
+      let csvContent = '';
+      if (Array.isArray(dataToExport)) {
+        // Handle array data (transactions or activities)
+        const headers = Object.keys(dataToExport[0]);
+        csvContent = headers.join(',') + '\n';
+        dataToExport.forEach(item => {
+          const values = headers.map(header => {
+            const value = item[header];
+            return typeof value === 'string' ? `"${value}"` : value;
+          });
+          csvContent += values.join(',') + '\n';
+        });
+      } else {
+        // Handle object data (sales report)
+        csvContent = Object.entries(dataToExport)
+          .map(([key, value]) => `${key},${value}`)
+          .join('\n');
+      }
+      
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${fileName}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
   };
 
   const defaultTrigger = (
@@ -82,9 +154,18 @@ export function ExportReportDialog({ trigger }: ExportReportDialogProps) {
                 <SelectValue placeholder="Select Store" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Stores</SelectItem>
-                <SelectItem value="johannesburg">Johannesburg</SelectItem>
-                <SelectItem value="cape-town">Cape Town</SelectItem>
+                <SelectItem value="All Stores">All Stores</SelectItem>
+                <SelectItem value="New York 5th Avenue">New York 5th Avenue</SelectItem>
+                <SelectItem value="Paris Champs-Élysées">Paris Champs-Élysées</SelectItem>
+                <SelectItem value="London Bond Street">London Bond Street</SelectItem>
+                <SelectItem value="Milan Via Montenapoleone">Milan Via Montenapoleone</SelectItem>
+                <SelectItem value="Tokyo Ginza">Tokyo Ginza</SelectItem>
+                <SelectItem value="Hong Kong Canton Road">Hong Kong Canton Road</SelectItem>
+                <SelectItem value="Dubai Mall">Dubai Mall</SelectItem>
+                <SelectItem value="Los Angeles Rodeo Drive">Los Angeles Rodeo Drive</SelectItem>
+                <SelectItem value="Shanghai IFC Mall">Shanghai IFC Mall</SelectItem>
+                <SelectItem value="Madrid Serrano">Madrid Serrano</SelectItem>
+                <SelectItem value="Online Store">Online Store</SelectItem>
               </SelectContent>
             </Select>
           </div>
