@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from "recharts";
 import { format } from "date-fns";
@@ -14,7 +13,7 @@ interface RevenueChartProps {
 }
 
 export function RevenueChart({ data, className }: RevenueChartProps) {
-  const formatter = (value: number) => `€${value.toLocaleString()}`;
+  const formatter = (value: number) => `R${value.toLocaleString()}`;
 
   const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
     if (active && payload && payload.length) {
