@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { CircleIcon } from "lucide-react";
@@ -8,7 +7,7 @@ export interface ActivityItem {
   title: string;
   description: string;
   timestamp: string;
-  type: "sale" | "refund" | "restock" | "campaign" | "alert";
+  type: "sale" | "refund" | "restock" | "campaign" | "alert" | "staff";
 }
 
 interface ActivityFeedProps {

@@ -1,4 +1,3 @@
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -20,6 +19,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 
 interface SidebarItemProps {
   icon: React.ReactNode;
@@ -72,6 +72,17 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({ className, expanded }: DashboardSidebarProps) {
   const [activeItem, setActiveItem] = useState("dashboard");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // TODO: Implement actual logout logic (clear tokens, etc.)
+    navigate("/login");
+  };
+
+  const handleNavigation = (path: string) => {
+    setActiveItem(path);
+    navigate(`/dashboard/${path}`);
+  };
 
   return (
     <aside
@@ -103,21 +114,21 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
             icon={<LayoutDashboardIcon className="h-4 w-4" />} 
             label="Dashboard Overview" 
             active={activeItem === "dashboard"}
-            onClick={() => setActiveItem("dashboard")}
+            onClick={() => handleNavigation("")}
             expanded={expanded}
           />
           <SidebarItem 
             icon={<BarChart3Icon className="h-4 w-4" />} 
             label="Sales Reports" 
             active={activeItem === "sales"}
-            onClick={() => setActiveItem("sales")}
+            onClick={() => handleNavigation("sales")}
             expanded={expanded}
           />
           <SidebarItem 
             icon={<CircleDollarSignIcon className="h-4 w-4" />} 
             label="Reconciliation" 
             active={activeItem === "reconciliation"}
-            onClick={() => setActiveItem("reconciliation")}
+            onClick={() => handleNavigation("reconciliation")}
             expanded={expanded}
           />
         </nav>
@@ -176,7 +187,7 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
           <SidebarItem 
             icon={<LogOutIcon className="h-4 w-4" />} 
             label="Logout"
-            onClick={() => {}}
+            onClick={handleLogout}
             expanded={expanded}
           />
         </nav>

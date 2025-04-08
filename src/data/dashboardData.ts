@@ -195,6 +195,14 @@ export const getActivitiesByStore = (store: string = "All Stores") => {
 // Recent activities data with store location
 export const activitiesData: (ActivityItem & { storeLocation?: string })[] = [
   {
+    id: "A1011",
+    title: "New Store Opening",
+    description: "Grand opening of our new flagship store in Sandton City, Johannesburg.",
+    timestamp: "Just now",
+    type: "campaign",
+    storeLocation: "Johannesburg"
+  },
+  {
     id: "A1001",
     title: "Limited Edition Collection Launch",
     description: "The Spring/Summer collection is now available in all flagship stores.",
