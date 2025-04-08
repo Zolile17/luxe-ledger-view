@@ -150,8 +150,9 @@ export function TransactionsTable({ transactions, className }: TransactionsTable
                     <TableCell>{transaction.storeLocation}</TableCell>
                     <TableCell>{transaction.date}</TableCell>
                     <TableCell className="font-medium">
-                      €{transaction.amount.toLocaleString()}
-                    </TableCell>
+  R{transaction.amount.toLocaleString()}
+</TableCell>
+
                     <TableCell>
                       <Badge
                         variant="outline"
