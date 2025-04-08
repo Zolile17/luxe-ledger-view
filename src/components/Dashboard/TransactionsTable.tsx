@@ -10,19 +10,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { 
-  CheckIcon, 
-  ChevronDownIcon, 
-  FilterIcon, 
+import {
+  CheckIcon,
+  ChevronDownIcon,
+  FilterIcon,
   SearchIcon,
   ChevronLeftIcon,
-  ChevronRightIcon
+  ChevronRightIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -42,7 +42,10 @@ interface TransactionsTableProps {
   className?: string;
 }
 
-export function TransactionsTable({ transactions, className }: TransactionsTableProps) {
+export function TransactionsTable({
+  transactions,
+  className,
+}: TransactionsTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,12 +53,17 @@ export function TransactionsTable({ transactions, className }: TransactionsTable
 
   const filteredTransactions = transactions.filter((transaction) => {
     const matchesSearch =
-      transaction.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      transaction.productName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       transaction.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.storeLocation.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = statusFilter === null || transaction.status === statusFilter;
-    
+      transaction.storeLocation
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === null || transaction.status === statusFilter;
+
     return matchesSearch && matchesStatus;
   });
 
@@ -81,7 +89,9 @@ export function TransactionsTable({ transactions, className }: TransactionsTable
   return (
     <Card className={className}>
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
-        <CardTitle className="text-lg font-medium">Recent Transactions</CardTitle>
+        <CardTitle className="text-lg font-medium">
+          Recent Transactions
+        </CardTitle>
         <div className="flex items-center space-x-2">
           <div className="relative">
             <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -103,19 +113,33 @@ export function TransactionsTable({ transactions, className }: TransactionsTable
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setStatusFilter(null)}>
-                <span className="mr-2">{statusFilter === null && <CheckIcon className="h-4 w-4" />}</span>
+                <span className="mr-2">
+                  {statusFilter === null && <CheckIcon className="h-4 w-4" />}
+                </span>
                 All
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setStatusFilter("completed")}>
-                <span className="mr-2">{statusFilter === "completed" && <CheckIcon className="h-4 w-4" />}</span>
+                <span className="mr-2">
+                  {statusFilter === "completed" && (
+                    <CheckIcon className="h-4 w-4" />
+                  )}
+                </span>
                 Completed
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setStatusFilter("pending")}>
-                <span className="mr-2">{statusFilter === "pending" && <CheckIcon className="h-4 w-4" />}</span>
+                <span className="mr-2">
+                  {statusFilter === "pending" && (
+                    <CheckIcon className="h-4 w-4" />
+                  )}
+                </span>
                 Pending
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setStatusFilter("failed")}>
-                <span className="mr-2">{statusFilter === "failed" && <CheckIcon className="h-4 w-4" />}</span>
+                <span className="mr-2">
+                  {statusFilter === "failed" && (
+                    <CheckIcon className="h-4 w-4" />
+                  )}
+                </span>
                 Failed
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -138,14 +162,22 @@ export function TransactionsTable({ transactions, className }: TransactionsTable
             <TableBody>
               {currentTransactions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
+                  <TableCell
+                    colSpan={6}
+                    className="text-center h-24 text-muted-foreground"
+                  >
                     No transactions found.
                   </TableCell>
                 </TableRow>
               ) : (
                 currentTransactions.map((transaction) => (
-                  <TableRow key={transaction.id} className="group hover:bg-muted/30">
-                    <TableCell className="font-medium">{transaction.productName}</TableCell>
+                  <TableRow
+                    key={transaction.id}
+                    className="group hover:bg-muted/30"
+                  >
+                    <TableCell className="font-medium">
+                      {transaction.productName}
+                    </TableCell>
                     <TableCell>{transaction.customer}</TableCell>
                     <TableCell>{transaction.storeLocation}</TableCell>
                     <TableCell>{transaction.date}</TableCell>
@@ -156,7 +188,10 @@ export function TransactionsTable({ transactions, className }: TransactionsTable
                     <TableCell>
                       <Badge
                         variant="outline"
-                        className={cn("capitalize", getStatusColor(transaction.status))}
+                        className={cn(
+                          "capitalize",
+                          getStatusColor(transaction.status)
+                        )}
                       >
                         {transaction.status}
                       </Badge>
@@ -170,7 +205,9 @@ export function TransactionsTable({ transactions, className }: TransactionsTable
         {/* Pagination Controls */}
         <div className="flex items-center justify-between px-4 py-3 border-t">
           <div className="text-sm text-muted-foreground">
-            Showing {startIndex + 1} to {Math.min(endIndex, filteredTransactions.length)} of {filteredTransactions.length} transactions
+            Showing {startIndex + 1} to{" "}
+            {Math.min(endIndex, filteredTransactions.length)} of{" "}
+            {filteredTransactions.length} transactions
           </div>
           <div className="flex items-center space-x-2">
             <Button
@@ -184,7 +221,9 @@ export function TransactionsTable({ transactions, className }: TransactionsTable
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
               disabled={currentPage === totalPages}
             >
               <ChevronRightIcon className="h-4 w-4" />

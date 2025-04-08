@@ -51,7 +51,7 @@ export function DashboardHeader({
   onStoreChange,
   hideStoreSelector = false,
   title,
-  description
+  description,
 }: DashboardHeaderProps) {
   const [selectedStore, setSelectedStore] = useState("All Stores");
   const [userRole, setUserRole] = useState("admin"); // admin or store-manager
@@ -138,7 +138,14 @@ export function DashboardHeader({
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarImage src="/avatars/01.png" alt="@user" />
-                <AvatarFallback>U</AvatarFallback>
+                <AvatarFallback>
+                  <img
+                    src="/images/user-profile.png"
+                    alt="Profile Picture"
+                    width={150}
+                    height={75}
+                  />
+                </AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
@@ -162,7 +169,7 @@ export function DashboardHeader({
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
-              <LogOutIcon className="mr-2 h-4 w-4"  />
+              <LogOutIcon className="mr-2 h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>
           </DropdownMenuContent>

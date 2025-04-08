@@ -172,6 +172,39 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
         </nav>
       </div>
 
+      <Separator className="my-4 bg-sidebar-border/50" />
+
+      <div className={cn("py-2", expanded ? "px-3" : "px-0")}>
+        {expanded && (
+          <p className="text-xs uppercase font-medium text-sidebar-foreground/50 mb-2 pl-3">
+            User Management
+          </p>
+        )}
+        <nav className="space-y-0.5">
+          <SidebarItem 
+            icon={<PackageIcon className="h-4 w-4" />} 
+            label="User Profiles" 
+            active={isActive("customers")}
+            onClick={() => handleNavigation("customers")}
+            expanded={expanded}
+          />
+          {/* <SidebarItem 
+            icon={<StoreIcon className="h-4 w-4" />} 
+            label="Store Performance" 
+            active={isActive("store-performance")}
+            onClick={() => handleNavigation("store-performance")}
+            expanded={expanded}
+          />
+          <SidebarItem 
+            icon={<FileTextIcon className="h-4 w-4" />} 
+            label="Export Reports" 
+            active={isActive("export")}
+            onClick={() => handleNavigation("export")}
+            expanded={expanded}
+          /> */}
+        </nav>
+      </div>
+
       <div className={cn("mt-auto pt-4", expanded ? "px-3" : "px-0")}>
         <Separator className="mb-4 bg-sidebar-border/50" />
         <nav className="space-y-1">
