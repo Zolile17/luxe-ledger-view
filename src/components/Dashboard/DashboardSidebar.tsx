@@ -8,7 +8,7 @@ import {
   CalendarIcon,
   CircleDollarSignIcon,
   FileBarChartIcon,
-  FileExportIcon,
+  FileTextIcon, // Changed from FileExportIcon to FileTextIcon
   HomeIcon, 
   LayoutDashboardIcon, 
   LogOutIcon, 
@@ -109,7 +109,7 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
             onClick={() => setActiveItem("stores")}
           />
           <SidebarItem 
-            icon={<FileExportIcon className="h-4 w-4" />} 
+            icon={<FileTextIcon className="h-4 w-4" />} 
             label="Export Reports" 
             active={activeItem === "export"}
             onClick={() => setActiveItem("export")}

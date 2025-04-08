@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { FileExportIcon } from "lucide-react";
+import { FileTextIcon } from "lucide-react"; // Changed from FileExportIcon to FileTextIcon
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -43,7 +43,7 @@ export function ExportReportDialog({ trigger }: ExportReportDialogProps) {
 
   const defaultTrigger = (
     <Button>
-      <FileExportIcon className="h-4 w-4 mr-2" />
+      <FileTextIcon className="h-4 w-4 mr-2" />
       Export Report
     </Button>
   );
