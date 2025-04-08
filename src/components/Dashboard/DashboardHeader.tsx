@@ -16,7 +16,8 @@ import {
   SearchIcon, 
   SettingsIcon, 
   StoreIcon, 
-  UserIcon 
+  UserIcon,
+  MenuIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -26,24 +27,58 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { storeLocations } from "@/data/dashboardData";
+
+// Using a context to manage store selection would be better in a real app
 
 interface DashboardHeaderProps {
   className?: string;
+  toggleSidebar?: () => void;
+  sidebarExpanded?: boolean;
+  isMobile?: boolean;
+  onStoreChange?: (store: string) => void;
 }
 
-export function DashboardHeader({ className }: DashboardHeaderProps) {
-  const [selectedStore, setSelectedStore] = useState("all");
+export function DashboardHeader({ 
+  className, 
+  toggleSidebar, 
+  sidebarExpanded, 
+  isMobile,
+  onStoreChange
+}: DashboardHeaderProps) {
+  const [selectedStore, setSelectedStore] = useState("All Stores");
   const [userRole, setUserRole] = useState("admin"); // admin or store-manager
 
   const handleStoreChange = (value: string) => {
     setSelectedStore(value);
+    if (onStoreChange) {
+      onStoreChange(value);
+    }
   };
+
+  useEffect(() => {
+    // Initialize with default store
+    if (onStoreChange) {
+      onStoreChange(selectedStore);
+    }
+  }, []);
 
   return (
     <header className={cn("px-4 sm:px-6 lg:px-8 py-4 border-b border-border flex items-center justify-between bg-background", className)}>
-      <div className="flex items-center">
-        <LvLogo size="lg" />
+      <div className="flex items-center space-x-4">
+        {isMobile && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleSidebar}
+            className="mr-2"
+          >
+            <MenuIcon className="h-5 w-5" />
+          </Button>
+        )}
+        {/* Only show logo in header when sidebar is collapsed or on mobile */}
+        {(isMobile || !sidebarExpanded) && <LvLogo size="lg" />}
       </div>
       <div className="flex items-center space-x-4">
         <div className="hidden sm:block">
@@ -53,9 +88,9 @@ export function DashboardHeader({ className }: DashboardHeaderProps) {
               <SelectValue placeholder="Select Store" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Stores</SelectItem>
-              <SelectItem value="johannesburg">Johannesburg</SelectItem>
-              <SelectItem value="cape-town">Cape Town</SelectItem>
+              {storeLocations.map((store) => (
+                <SelectItem key={store} value={store}>{store}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

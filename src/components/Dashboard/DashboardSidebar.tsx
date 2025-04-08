@@ -8,7 +8,7 @@ import {
   CalendarIcon,
   CircleDollarSignIcon,
   FileBarChartIcon,
-  FileTextIcon, // Changed from FileExportIcon to FileTextIcon
+  FileTextIcon,
   HomeIcon, 
   LayoutDashboardIcon, 
   LogOutIcon, 
@@ -19,105 +19,144 @@ import {
   UserIcon
 } from "lucide-react";
 import { useState } from "react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface SidebarItemProps {
   icon: React.ReactNode;
   label: string;
   active?: boolean;
   onClick?: () => void;
+  expanded: boolean;
 }
 
-function SidebarItem({ icon, label, active, onClick }: SidebarItemProps) {
-  return (
+function SidebarItem({ icon, label, active, onClick, expanded }: SidebarItemProps) {
+  const content = (
     <Button
       variant="ghost"
       className={cn(
         "w-full justify-start pl-3 mb-1",
+        expanded ? "" : "px-0 justify-center",
         active
           ? "bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
           : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
       )}
       onClick={onClick}
     >
-      <span className="mr-3">{icon}</span>
-      {label}
+      <span className={expanded ? "mr-3" : ""}>{icon}</span>
+      {expanded && label}
     </Button>
   );
+
+  if (!expanded) {
+    return (
+      <TooltipProvider>
+        <Tooltip delayDuration={50}>
+          <TooltipTrigger asChild>
+            {content}
+          </TooltipTrigger>
+          <TooltipContent side="right" className="bg-sidebar-accent text-sidebar-accent-foreground">            
+            <p>{label}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+
+  return content;
 }
 
 interface DashboardSidebarProps {
   className?: string;
+  expanded: boolean;
 }
 
-export function DashboardSidebar({ className }: DashboardSidebarProps) {
+export function DashboardSidebar({ className, expanded }: DashboardSidebarProps) {
   const [activeItem, setActiveItem] = useState("dashboard");
 
   return (
     <aside
       className={cn(
         "flex flex-col h-screen pb-4 bg-sidebar text-sidebar-foreground border-r border-sidebar-border",
+        expanded ? "w-64" : "w-16",
         className
       )}
     >
-      <div className="px-3 py-4 flex items-center justify-between">
-        <LvLogo className="text-sidebar-foreground" />
+      <div className={cn(
+        "py-4 flex items-center", 
+        expanded ? "px-3 justify-between" : "justify-center"
+      )}>
+        {expanded ? (
+          <LvLogo className="text-sidebar-foreground" />
+        ) : (
+          <LayoutDashboardIcon className="h-6 w-6 text-sidebar-foreground" />
+        )}
       </div>
       
-      <div className="px-3 py-2">
-        <p className="text-xs uppercase font-medium text-sidebar-foreground/50 mb-2 pl-3">
-          Main Menu
-        </p>
+      <div className={cn("py-2", expanded ? "px-3" : "px-0")}>
+        {expanded && (
+          <p className="text-xs uppercase font-medium text-sidebar-foreground/50 mb-2 pl-3">
+            Main Menu
+          </p>
+        )}
         <nav className="space-y-0.5">
           <SidebarItem 
             icon={<LayoutDashboardIcon className="h-4 w-4" />} 
             label="Dashboard Overview" 
             active={activeItem === "dashboard"}
             onClick={() => setActiveItem("dashboard")}
+            expanded={expanded}
           />
           <SidebarItem 
             icon={<BarChart3Icon className="h-4 w-4" />} 
             label="Sales Reports" 
             active={activeItem === "sales"}
             onClick={() => setActiveItem("sales")}
+            expanded={expanded}
           />
           <SidebarItem 
             icon={<CircleDollarSignIcon className="h-4 w-4" />} 
             label="Reconciliation" 
             active={activeItem === "reconciliation"}
             onClick={() => setActiveItem("reconciliation")}
+            expanded={expanded}
           />
         </nav>
       </div>
 
       <Separator className="my-4 bg-sidebar-border/50" />
 
-      <div className="px-3 py-2">
-        <p className="text-xs uppercase font-medium text-sidebar-foreground/50 mb-2 pl-3">
-          Store Management
-        </p>
+      <div className={cn("py-2", expanded ? "px-3" : "px-0")}>
+        {expanded && (
+          <p className="text-xs uppercase font-medium text-sidebar-foreground/50 mb-2 pl-3">
+            Store Management
+          </p>
+        )}
         <nav className="space-y-0.5">
           <SidebarItem 
             icon={<PackageIcon className="h-4 w-4" />} 
             label="Products & Categories" 
             active={activeItem === "products"}
             onClick={() => setActiveItem("products")}
+            expanded={expanded}
           />
           <SidebarItem 
             icon={<StoreIcon className="h-4 w-4" />} 
             label="Store Performance" 
             active={activeItem === "stores"}
             onClick={() => setActiveItem("stores")}
+            expanded={expanded}
           />
           <SidebarItem 
             icon={<FileTextIcon className="h-4 w-4" />} 
             label="Export Reports" 
             active={activeItem === "export"}
             onClick={() => setActiveItem("export")}
+            expanded={expanded}
           />
         </nav>
       </div>
 
-      <div className="mt-auto px-3 pt-4">
+      <div className={cn("mt-auto pt-4", expanded ? "px-3" : "px-0")}>
         <Separator className="mb-4 bg-sidebar-border/50" />
         <nav className="space-y-1">
           <SidebarItem 
@@ -125,16 +164,20 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
             label="Profile" 
             active={activeItem === "profile"}
             onClick={() => setActiveItem("profile")}
+            expanded={expanded}
           />
           <SidebarItem 
             icon={<SettingsIcon className="h-4 w-4" />} 
             label="Settings" 
             active={activeItem === "settings"}
             onClick={() => setActiveItem("settings")}
+            expanded={expanded}
           />
           <SidebarItem 
             icon={<LogOutIcon className="h-4 w-4" />} 
-            label="Logout" 
+            label="Logout"
+            onClick={() => {}}
+            expanded={expanded}
           />
         </nav>
       </div>
