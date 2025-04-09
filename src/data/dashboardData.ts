@@ -1,5 +1,6 @@
+
 import { ActivityItem } from "@/components/Dashboard/ActivityFeed";
-import { Transaction } from "@/components/Dashboard/TransactionsTable";
+import { Transaction } from "@/components/Dashboard/ReconciliationTable";
 
 // Store names/locations
 export const storeLocations = [

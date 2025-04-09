@@ -20,9 +20,7 @@ import {
   getStoreData, 
   getRevenueData, 
   getTransactionsByStore,
-  getActivitiesByStore,
-  activitiesData,
-  transactionsData
+  getActivitiesByStore
 } from "@/data/dashboardData";
 
 // Mock data for store comparison
