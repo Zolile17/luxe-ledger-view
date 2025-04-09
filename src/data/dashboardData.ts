@@ -1,5 +1,6 @@
 import { ActivityItem } from "@/components/Dashboard/ActivityFeed";
-import { Transaction } from "@/components/Dashboard/TransactionsTable";
+import { Transaction as ReconciliationTransaction } from "@/components/Dashboard/ReconciliationTable";
+import { Transaction as TransactionsTableTransaction } from "@/components/Dashboard/TransactionsTable";
 
 // Store names/locations
 export const storeLocations = [
@@ -61,11 +62,11 @@ export const getRevenueData = (store: string = "All Stores") => {
 export const revenueData = getRevenueData();
 
 // Filter transactions by store
-export const getTransactionsByStore = (store: string = "All Stores") => {
+export const getTransactionsByStore = (store: string = "All Stores"): TransactionsTableTransaction[] => {
   if (store === "All Stores") {
-    return transactionsData;
+    return transactionsData as TransactionsTableTransaction[];
   }
-  return transactionsData.filter(transaction => transaction.storeLocation === store);
+  return (transactionsData.filter(transaction => transaction.storeLocation === store)) as TransactionsTableTransaction[];
 };
 
 // Cashier names for transactions
@@ -95,7 +96,7 @@ const generateMaskedCard = () => {
 };
 
 // Sample transactions
-export const transactionsData: Transaction[] = [
+export const transactionsData: ReconciliationTransaction[] = [
   {
     id: "T1001",
     productName: "Neverfull MM Tote",

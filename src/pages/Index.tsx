@@ -7,7 +7,7 @@ import { StoreComparisonChart } from "@/components/Dashboard/StoreComparisonChar
 import { ExportReportDialog } from "@/components/Dashboard/ExportReportDialog";
 import { RevenueChart } from "@/components/Dashboard/RevenueChart";
 import { ActivityFeed } from "@/components/Dashboard/ActivityFeed";
-import { TransactionsTable } from "@/components/Dashboard/TransactionsTable";
+import { TransactionsGraph } from "@/components/Dashboard/TransactionsGraph";
 import { 
   BarChart3Icon, 
   CircleDollarSignIcon, 
@@ -20,9 +20,7 @@ import {
   getStoreData, 
   getRevenueData, 
   getTransactionsByStore,
-  getActivitiesByStore,
-  activitiesData,
-  transactionsData
+  getActivitiesByStore
 } from "@/data/dashboardData";
 
 // Mock data for store comparison
@@ -123,7 +121,7 @@ const DashboardContent = ({ selectedStore }: DashboardContentProps) => {
 
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3 mb-8">
         <div className="col-span-1 lg:col-span-2">
-          <TransactionsTable transactions={filteredTransactions} />
+          <TransactionsGraph transactions={filteredTransactions} />
         </div>
         <div className="col-span-1">
           <ActivityFeed activities={filteredActivities} />

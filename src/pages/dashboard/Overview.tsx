@@ -1,7 +1,8 @@
+
 import { DashboardLayout } from "@/components/Dashboard/DashboardLayout";
 import { MetricCard } from "@/components/Dashboard/MetricCard";
 import { RevenueChart } from "@/components/Dashboard/RevenueChart";
-import { TransactionsTable } from "@/components/Dashboard/TransactionsTable";
+import { TransactionsGraph } from "@/components/Dashboard/TransactionsGraph";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { Button } from "@/components/ui/button";
 import { DownloadIcon, FilterIcon, CircleDollarSignIcon, BarChart3Icon, ShoppingBagIcon, UsersIcon, FileDownIcon } from "lucide-react";
@@ -107,7 +108,7 @@ export default function OverviewPage() {
 
         <div className="grid gap-4 mt-4">
           <RevenueChart data={filteredRevenueData} />
-          <TransactionsTable transactions={filteredTransactions} />
+          <TransactionsGraph transactions={filteredTransactions} />
         </div>
       </div>
     </DashboardLayout>
