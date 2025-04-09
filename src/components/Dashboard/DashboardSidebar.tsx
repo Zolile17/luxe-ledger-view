@@ -102,7 +102,7 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
         expanded ? "px-3 justify-between" : "justify-center"
       )}>
         {expanded ? (
-          <LvLogo className="text-sidebar-foreground" />
+          <LvLogo className="text-sidebar-foreground" variant="sidebar" />
         ) : (
           <LayoutDashboardIcon className="h-6 w-6 text-sidebar-foreground" />
         )}
