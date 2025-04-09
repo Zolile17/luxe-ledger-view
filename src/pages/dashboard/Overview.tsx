@@ -49,7 +49,7 @@ export default function OverviewPage() {
   return (
     <DashboardLayout
       title="Dashboard Overview"
-      description="Welcome to your luxury retail dashboard"
+      description=""
       selectedStore={selectedStore}
       onStoreChange={setSelectedStore}
     >

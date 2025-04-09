@@ -37,8 +37,8 @@ function SidebarItem({ icon, label, active, onClick, expanded }: SidebarItemProp
         "w-full justify-start pl-3 mb-1",
         expanded ? "" : "px-0 justify-center",
         active
-          ? "bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+          ? "bg-black text-white hover:bg-black hover:text-white"
+          : "text-white/70 hover:text-white hover:bg-black/50"
       )}
       onClick={onClick}
     >
@@ -54,7 +54,7 @@ function SidebarItem({ icon, label, active, onClick, expanded }: SidebarItemProp
           <TooltipTrigger asChild>
             {content}
           </TooltipTrigger>
-          <TooltipContent side="right" className="bg-sidebar-accent text-sidebar-accent-foreground">            
+          <TooltipContent side="right" className="bg-black text-white">            
             <p>{label}</p>
           </TooltipContent>
         </Tooltip>
@@ -92,7 +92,7 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
   return (
     <aside
       className={cn(
-        "flex flex-col h-screen pb-4 bg-sidebar text-sidebar-foreground border-r border-sidebar-border",
+        "flex flex-col h-screen pb-4 bg-black text-white border-r border-sidebar-border",
         expanded ? "w-64" : "w-16",
         className
       )}
@@ -102,15 +102,15 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
         expanded ? "px-3 justify-between" : "justify-center"
       )}>
         {expanded ? (
-          <LvLogo className="text-sidebar-foreground" variant="sidebar" />
+          <LvLogo className="text-white" />
         ) : (
-          <LayoutDashboardIcon className="h-6 w-6 text-sidebar-foreground" />
+          <LayoutDashboardIcon className="h-6 w-6 text-white" />
         )}
       </div>
       
       <div className={cn("py-2", expanded ? "px-3" : "px-0")}>
         {expanded && (
-          <p className="text-xs uppercase font-medium text-sidebar-foreground/50 mb-2 pl-3">
+          <p className="text-xs uppercase font-medium text-white/50 mb-2 pl-3">
             Main Menu
           </p>
         )}
@@ -143,30 +143,17 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
 
       <div className={cn("py-2", expanded ? "px-3" : "px-0")}>
         {expanded && (
-          <p className="text-xs uppercase font-medium text-sidebar-foreground/50 mb-2 pl-3">
-            Store Management
+          <p className="text-xs uppercase font-medium text-white/50 mb-2 pl-3">
+            {/* Store Management Section is commented out */}
+            {/* Store Management */}
           </p>
         )}
         <nav className="space-y-0.5">
-          <SidebarItem 
+          {/* <SidebarItem 
             icon={<PackageIcon className="h-4 w-4" />} 
             label="Products & Categories" 
             active={isActive("products")}
             onClick={() => handleNavigation("products")}
-            expanded={expanded}
-          />
-          {/* <SidebarItem 
-            icon={<StoreIcon className="h-4 w-4" />} 
-            label="Store Performance" 
-            active={isActive("store-performance")}
-            onClick={() => handleNavigation("store-performance")}
-            expanded={expanded}
-          />
-          <SidebarItem 
-            icon={<FileTextIcon className="h-4 w-4" />} 
-            label="Export Reports" 
-            active={isActive("export")}
-            onClick={() => handleNavigation("export")}
             expanded={expanded}
           /> */}
         </nav>
@@ -174,9 +161,9 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
 
       <Separator className="my-4 bg-sidebar-border/50" />
 
-      <div className={cn("py-2", expanded ? "px-3" : "px-0")}>
+      {/* <div className={cn("py-2", expanded ? "px-3" : "px-0")}>
         {expanded && (
-          <p className="text-xs uppercase font-medium text-sidebar-foreground/50 mb-2 pl-3">
+          <p className="text-xs uppercase font-medium text-white/50 mb-2 pl-3">
             User Management
           </p>
         )}
@@ -188,22 +175,8 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
             onClick={() => handleNavigation("customers")}
             expanded={expanded}
           />
-          {/* <SidebarItem 
-            icon={<StoreIcon className="h-4 w-4" />} 
-            label="Store Performance" 
-            active={isActive("store-performance")}
-            onClick={() => handleNavigation("store-performance")}
-            expanded={expanded}
-          />
-          <SidebarItem 
-            icon={<FileTextIcon className="h-4 w-4" />} 
-            label="Export Reports" 
-            active={isActive("export")}
-            onClick={() => handleNavigation("export")}
-            expanded={expanded}
-          /> */}
         </nav>
-      </div>
+      </div> */}
 
       <div className={cn("mt-auto pt-4", expanded ? "px-3" : "px-0")}>
         <Separator className="mb-4 bg-sidebar-border/50" />
