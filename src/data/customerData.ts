@@ -1,4 +1,3 @@
-import { Customer } from "./customerData";
 
 export interface Customer {
   id: string;

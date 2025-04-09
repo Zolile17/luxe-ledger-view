@@ -1,3 +1,4 @@
+
 import { cn } from "@/lib/utils";
 import { LvLogo } from "./LvLogo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -41,6 +42,7 @@ interface DashboardHeaderProps {
   hideStoreSelector?: boolean;
   title?: string;
   description?: string;
+  selectedStore?: string;
 }
 
 export function DashboardHeader({
@@ -52,25 +54,31 @@ export function DashboardHeader({
   hideStoreSelector = false,
   title,
   description,
+  selectedStore = "All Stores",
 }: DashboardHeaderProps) {
-  const [selectedStore, setSelectedStore] = useState("All Stores");
+  const [localSelectedStore, setLocalSelectedStore] = useState(selectedStore);
   const [userRole, setUserRole] = useState("admin"); // admin or store-manager
   const [activeItem, setActiveItem] = useState("dashboard");
   const navigate = useNavigate();
 
   const handleStoreChange = (value: string) => {
-    setSelectedStore(value);
+    setLocalSelectedStore(value);
     if (onStoreChange) {
       onStoreChange(value);
     }
   };
 
   useEffect(() => {
-    // Initialize with default store
+    // Initialize with default store or selected store
     if (onStoreChange) {
-      onStoreChange(selectedStore);
+      onStoreChange(localSelectedStore);
     }
   }, []);
+
+  useEffect(() => {
+    // Update local state when prop changes
+    setLocalSelectedStore(selectedStore);
+  }, [selectedStore]);
 
   const handleLogout = () => {
     // TODO: Implement actual logout logic (clear tokens, etc.)
@@ -110,7 +118,7 @@ export function DashboardHeader({
 
       <div className="flex items-center space-x-4">
         {!hideStoreSelector && (
-          <Select value={selectedStore} onValueChange={handleStoreChange}>
+          <Select value={localSelectedStore} onValueChange={handleStoreChange}>
             <SelectTrigger className="w-[200px]">
               <StoreIcon className="mr-2 h-4 w-4" />
               <SelectValue placeholder="Select a store" />

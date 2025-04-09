@@ -36,56 +36,11 @@ const storeComparisonData = [
   { name: "Sun", johannesburg: 60000, capeTown: 40000 },
 ];
 
-// Mock data for reconciliation report
-const reconciliationData = [
-  {
-    id: "1",
-    date: "2025-04-07",
-    expectedRevenue: 356200,
-    actualRevenue: 356200,
-    variance: 0,
-    status: "balanced" as const,
-    store: "Johannesburg"
-  },
-  {
-    id: "2",
-    date: "2025-04-07",
-    expectedRevenue: 244500,
-    actualRevenue: 238750,
-    variance: -5750,
-    status: "warning" as const,
-    store: "Cape Town"
-  },
-  {
-    id: "3",
-    date: "2025-04-06",
-    expectedRevenue: 412300,
-    actualRevenue: 396800,
-    variance: -15500,
-    status: "critical" as const,
-    store: "Johannesburg"
-  },
-  {
-    id: "4",
-    date: "2025-04-06",
-    expectedRevenue: 287600,
-    actualRevenue: 302400,
-    variance: 14800,
-    status: "warning" as const,
-    store: "Cape Town"
-  },
-  {
-    id: "5",
-    date: "2025-04-05",
-    expectedRevenue: 368900,
-    actualRevenue: 368900,
-    variance: 0,
-    status: "balanced" as const,
-    store: "Johannesburg"
-  },
-];
+interface DashboardContentProps {
+  selectedStore: string;
+}
 
-const DashboardContent = ({ selectedStore }: { selectedStore: string }) => {
+const DashboardContent = ({ selectedStore }: DashboardContentProps) => {
   const [userRole, setUserRole] = useState<"admin" | "store-manager">("admin");
   const [storeMetrics, setStoreMetrics] = useState(getStoreData(selectedStore));
   const [revenueData, setRevenueData] = useState(getRevenueData(selectedStore));
@@ -125,6 +80,7 @@ const DashboardContent = ({ selectedStore }: { selectedStore: string }) => {
               Export Report
             </Button>
           }
+          selectedStore={selectedStore}
         />
       </div>
 
@@ -174,10 +130,6 @@ const DashboardContent = ({ selectedStore }: { selectedStore: string }) => {
         </div>
       </div>
 
-      <div className="mb-8">
-        <ReconciliationTable data={reconciliationData} />
-      </div>
-
       <div className="mt-8 text-xs text-center text-muted-foreground">
         <p>© {new Date().getFullYear()} Louis Vuitton. All rights reserved.</p>
       </div>
@@ -186,9 +138,16 @@ const DashboardContent = ({ selectedStore }: { selectedStore: string }) => {
 };
 
 const Index = () => {
+  const [selectedStore, setSelectedStore] = useState("All Stores");
+
   return (
-    <DashboardLayout>
-      {(selectedStore: string) => <DashboardContent selectedStore={selectedStore} />}
+    <DashboardLayout
+      title="Dashboard Overview"
+      description="Welcome to your sales overview"
+      selectedStore={selectedStore}
+      onStoreChange={setSelectedStore}
+    >
+      <DashboardContent selectedStore={selectedStore} />
     </DashboardLayout>
   );
 };

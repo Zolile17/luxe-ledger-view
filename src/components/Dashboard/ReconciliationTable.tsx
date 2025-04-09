@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -17,7 +18,6 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Transaction } from "./TransactionsTable";
 import { useState } from "react";
 import {
   Dialog,
@@ -27,6 +27,19 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/dialog";
+
+export interface Transaction {
+  id: string;
+  productName: string;
+  customer: string;
+  date: string;
+  amount: number;
+  status: string;
+  storeLocation: string;
+  // Add the missing properties
+  paymentMethod?: string;
+  notes?: string;
+}
 
 interface ReconciliationTableProps {
   transactions: Transaction[];
