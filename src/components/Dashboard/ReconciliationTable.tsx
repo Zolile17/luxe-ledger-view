@@ -36,7 +36,10 @@ export interface Transaction {
   amount: number;
   status: string;
   storeLocation: string;
-  // Add the missing properties
+  // Added new fields
+  rrn?: string;
+  cardNumber?: string;
+  servedBy?: string;
   paymentMethod?: string;
   notes?: string;
 }
@@ -102,7 +105,8 @@ export function ReconciliationTable({
                 <TableHead>Date</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Store</TableHead>
+                <TableHead>RRN</TableHead>
+                <TableHead>Served By</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -123,13 +127,16 @@ export function ReconciliationTable({
                           ? "default"
                           : transaction.status === "pending"
                           ? "secondary"
+                          : transaction.status === "refund"
+                          ? "outline"
                           : "destructive"
                       }
                     >
                       {transaction.status}
                     </Badge>
                   </TableCell>
-                  <TableCell>{transaction.storeLocation}</TableCell>
+                  <TableCell>{transaction.rrn || "N/A"}</TableCell>
+                  <TableCell>{transaction.servedBy || "N/A"}</TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
                       <button
@@ -234,6 +241,8 @@ export function ReconciliationTable({
                         ? "default"
                         : selectedTransaction.status === "pending"
                         ? "secondary"
+                        : selectedTransaction.status === "refund"
+                        ? "outline"
                         : "destructive"
                     }
                   >
@@ -249,7 +258,27 @@ export function ReconciliationTable({
                 </div>
               </div>
 
-              {/* You can add more fields here as needed */}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <div className="font-semibold text-left">RRN:</div>
+                <div className="col-span-3">
+                  {selectedTransaction.rrn || "N/A"}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-4 items-center gap-4">
+                <div className="font-semibold text-left">Card Number:</div>
+                <div className="col-span-3">
+                  {selectedTransaction.cardNumber || "N/A"}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-4 items-center gap-4">
+                <div className="font-semibold text-left">Served By:</div>
+                <div className="col-span-3">
+                  {selectedTransaction.servedBy || "N/A"}
+                </div>
+              </div>
+
               <div className="grid grid-cols-4 items-center gap-4">
                 <div className="font-semibold text-left">Payment Method:</div>
                 <div className="col-span-3">

@@ -68,6 +68,32 @@ export const getTransactionsByStore = (store: string = "All Stores") => {
   return transactionsData.filter(transaction => transaction.storeLocation === store);
 };
 
+// Cashier names for transactions
+const cashierNames = [
+  "Thabo Mbeki",
+  "Lerato Zulu",
+  "Grace Ndlovu",
+  "Sipho Mabaso",
+  "Nomsa Khumalo",
+  "Bongani Dlamini",
+  "Ayanda Nkosi",
+  "Nelson Mandela Jr.",
+  "Precious Mokoena",
+  "Themba Mosimane"
+];
+
+// Function to generate RRN (Reference Retrieval Number)
+const generateRRN = () => {
+  return Math.floor(100000000 + Math.random() * 900000000).toString();
+};
+
+// Function to generate masked card number
+const generateMaskedCard = () => {
+  const prefix = Math.random() > 0.5 ? "4" : "5"; // Visa or Mastercard
+  const visibleStart = prefix + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+  return `${visibleStart} **** **** ${Math.floor(1000 + Math.random() * 9000)}`;
+};
+
 // Sample transactions
 export const transactionsData: Transaction[] = [
   {
@@ -78,6 +104,9 @@ export const transactionsData: Transaction[] = [
     amount: 1650,
     status: "completed",
     storeLocation: "Cape Town",
+    rrn: generateRRN(),
+    cardNumber: generateMaskedCard(),
+    servedBy: cashierNames[0]
   },
   {
     id: "T1002",
@@ -85,8 +114,11 @@ export const transactionsData: Transaction[] = [
     customer: "Sarah Johnson",
     date: "Apr 7, 2025",
     amount: 1350,
-    status: "completed",
+    status: "refund",
     storeLocation: "Johannesburg",
+    rrn: generateRRN(),
+    cardNumber: generateMaskedCard(),
+    servedBy: cashierNames[1]
   },
   {
     id: "T1003",
@@ -96,6 +128,9 @@ export const transactionsData: Transaction[] = [
     amount: 490,
     status: "pending",
     storeLocation: "Johannesburg",
+    rrn: generateRRN(),
+    cardNumber: generateMaskedCard(),
+    servedBy: cashierNames[2]
   },
   {
     id: "T1004",
@@ -105,6 +140,9 @@ export const transactionsData: Transaction[] = [
     amount: 2800,
     status: "completed",
     storeLocation: "Cape Town",
+    rrn: generateRRN(),
+    cardNumber: generateMaskedCard(),
+    servedBy: cashierNames[3]
   },
   {
     id: "T1005",
@@ -112,8 +150,11 @@ export const transactionsData: Transaction[] = [
     customer: "Julia Roberts",
     date: "Apr 5, 2025",
     amount: 4950,
-    status: "failed",
+    status: "refund",
     storeLocation: "Online Store",
+    rrn: generateRRN(),
+    cardNumber: generateMaskedCard(),
+    servedBy: cashierNames[4]
   },
   {
     id: "T1006",
@@ -123,6 +164,9 @@ export const transactionsData: Transaction[] = [
     amount: 4650,
     status: "completed",
     storeLocation: "Cape Town",
+    rrn: generateRRN(),
+    cardNumber: generateMaskedCard(),
+    servedBy: cashierNames[5]
   },
   {
     id: "T1007",
@@ -130,8 +174,11 @@ export const transactionsData: Transaction[] = [
     customer: "Michael Brown",
     date: "Apr 4, 2025",
     amount: 1090,
-    status: "completed",
+    status: "refund",
     storeLocation: "Johannesburg",
+    rrn: generateRRN(),
+    cardNumber: generateMaskedCard(),
+    servedBy: cashierNames[6]
   },
   {
     id: "T1008",
@@ -141,6 +188,9 @@ export const transactionsData: Transaction[] = [
     amount: 1850,
     status: "pending",
     storeLocation: "Cape Town",
+    rrn: generateRRN(),
+    cardNumber: generateMaskedCard(),
+    servedBy: cashierNames[7]
   },
   {
     id: "T1009",
@@ -150,6 +200,9 @@ export const transactionsData: Transaction[] = [
     amount: 2150,
     status: "completed",
     storeLocation: "Cape Town",
+    rrn: generateRRN(),
+    cardNumber: generateMaskedCard(),
+    servedBy: cashierNames[8]
   },
   {
     id: "T1010",
@@ -159,6 +212,9 @@ export const transactionsData: Transaction[] = [
     amount: 525,
     status: "completed",
     storeLocation: "Johannesburg",
+    rrn: generateRRN(),
+    cardNumber: generateMaskedCard(),
+    servedBy: cashierNames[9]
   },
   {
     id: "T1011",
@@ -166,8 +222,11 @@ export const transactionsData: Transaction[] = [
     customer: "Olivia Chen",
     date: "Apr 2, 2025",
     amount: 1590,
-    status: "completed",
+    status: "refund",
     storeLocation: "Cape Town",
+    rrn: generateRRN(),
+    cardNumber: generateMaskedCard(),
+    servedBy: cashierNames[0]
   },
   {
     id: "T1012",
@@ -177,6 +236,9 @@ export const transactionsData: Transaction[] = [
     amount: 750,
     status: "completed",
     storeLocation: "Johannesburg",
+    rrn: generateRRN(),
+    cardNumber: generateMaskedCard(),
+    servedBy: cashierNames[1]
   }
 ];
 
