@@ -97,7 +97,7 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
         className
       )}
     >
-      <div className={cn(
+      {/* <div className={cn(
         "py-4 flex items-center", 
         expanded ? "px-3 justify-between" : "justify-center"
       )}>
@@ -106,7 +106,7 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
         ) : (
           <LayoutDashboardIcon className="h-6 w-6 text-white" />
         )}
-      </div>
+      </div> */}
       
       <div className={cn("py-2", expanded ? "px-3" : "px-0")}>
         {expanded && (

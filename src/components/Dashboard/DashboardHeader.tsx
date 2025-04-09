@@ -105,7 +105,7 @@ export function DashboardHeader({
             onClick={toggleSidebar}
             className="mr-2"
           >
-            <MenuIcon className="h-5 w-5" />
+            <MenuIcon className="h-5 w-5" />s
           </Button>
         )}
         {/* Only show logo in header when sidebar is collapsed or on mobile */}

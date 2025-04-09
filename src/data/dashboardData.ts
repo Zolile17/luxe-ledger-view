@@ -7,7 +7,6 @@ export const storeLocations = [
   "All Stores",
   "Johannesburg",
   "Cape Town",
-  "Online Store"
 ];
 
 // Mock data for different stores
@@ -20,21 +19,21 @@ const storeData = {
   },
   "Johannesburg": {
     revenue: [24500, 22000, 18600, 21800, 25200, 27400, 32000, 30500, 29800, 28300, 30000, 31700, 35300, 38000],
-    salesCount: 112,
+    salesCount: 212,
     averageOrder: 2580,
-    newCustomers: 32
+    newCustomers: 132
   },
   "Cape Town": {
     revenue: [26500, 24000, 22600, 25800, 28200, 30400, 34000, 32500, 30800, 29300, 31000, 32700, 36300, 39000],
-    salesCount: 124,
+    salesCount: 324,
     averageOrder: 2760,
-    newCustomers: 35
+    newCustomers: 235
   },
   "Online Store": {
     revenue: [27500, 26000, 25600, 27800, 29200, 30400, 34000, 32500, 31800, 30300, 32000, 33700, 36300, 38000],
-    salesCount: 132,
+    salesCount: 632,
     averageOrder: 2360,
-    newCustomers: 42
+    newCustomers: 442
   }
 };
 
@@ -102,7 +101,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     productName: "Neverfull MM Tote",
     customer: "Emily Parker",
     date: "Apr 7, 2025",
-    amount: 1650,
+    amount: 16500,
     status: "completed",
     storeLocation: "Cape Town",
     rrn: generateRRN(),
@@ -114,7 +113,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     productName: "Speedy 30 Handbag",
     customer: "Sarah Johnson",
     date: "Apr 7, 2025",
-    amount: 1350,
+    amount: 13506,
     status: "refund",
     storeLocation: "Johannesburg",
     rrn: generateRRN(),
@@ -126,7 +125,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     productName: "Monogram Shawl",
     customer: "Thomas Wright",
     date: "Apr 6, 2025",
-    amount: 490,
+    amount: 4905,
     status: "pending",
     storeLocation: "Johannesburg",
     rrn: generateRRN(),
@@ -162,7 +161,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     productName: "Capucines MM Bag",
     customer: "Alexandra Smith",
     date: "Apr 5, 2025",
-    amount: 4650,
+    amount: 46500,
     status: "completed",
     storeLocation: "Cape Town",
     rrn: generateRRN(),
@@ -174,7 +173,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     productName: "LV Archlight Sneakers",
     customer: "Michael Brown",
     date: "Apr 4, 2025",
-    amount: 1090,
+    amount: 10900,
     status: "refund",
     storeLocation: "Johannesburg",
     rrn: generateRRN(),
@@ -210,7 +209,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     productName: "Monogram Belt",
     customer: "James Wilson",
     date: "Apr 3, 2025",
-    amount: 525,
+    amount: 5250,
     status: "failed",
     storeLocation: "Johannesburg",
     rrn: generateRRN(),
