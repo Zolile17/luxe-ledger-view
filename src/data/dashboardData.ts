@@ -94,7 +94,12 @@ const generateMaskedCard = () => {
   return `${visibleStart} **** **** ${Math.floor(1000 + Math.random() * 9000)}`;
 };
 
-// Sample transactions
+// Generate random transaction count between 50 and 300
+const getRandomTransactionCount = () => {
+  return Math.floor(Math.random() * (300 - 50 + 1)) + 50;
+};
+
+// Sample transactions with updated data
 export const transactionsData: ReconciliationTransaction[] = [
   {
     id: "T1001",
@@ -107,9 +112,9 @@ export const transactionsData: ReconciliationTransaction[] = [
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
     servedBy: cashierNames[0],
-    terminalId: "001", // Example terminal ID
-    store: "Cape Town", // Example store
-    email: "emily.parker@example.com" // Example email
+    terminalId: "001",
+    store: "Cape Town",
+    email: "emily.parker@example.com"
   },
   {
     id: "T1002",
@@ -122,9 +127,9 @@ export const transactionsData: ReconciliationTransaction[] = [
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
     servedBy: cashierNames[1],
-    terminalId: "002", // Example terminal ID
-    store: "Johannesburg", // Example store
-    email: "sarah.johnson@example.com" // Example email
+    terminalId: "002",
+    store: "Johannesburg",
+    email: "sarah.johnson@example.com"
   },
   {
     id: "T1003",
@@ -137,9 +142,9 @@ export const transactionsData: ReconciliationTransaction[] = [
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
     servedBy: cashierNames[2],
-    terminalId: "003", // Example terminal ID
-    store: "Johannesburg", // Example store
-    email: "thomas.wright@example.com" // Example email
+    terminalId: "003",
+    store: "Johannesburg",
+    email: "thomas.wright@example.com"
   },
   {
     id: "T1004",
@@ -152,9 +157,9 @@ export const transactionsData: ReconciliationTransaction[] = [
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
     servedBy: cashierNames[3],
-    terminalId: "004", // Example terminal ID
-    store: "Cape Town", // Example store
-    email: "david.chen@example.com" // Example email
+    terminalId: "004",
+    store: "Cape Town",
+    email: "david.chen@example.com"
   },
   {
     id: "T1005",
@@ -167,9 +172,9 @@ export const transactionsData: ReconciliationTransaction[] = [
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
     servedBy: cashierNames[4],
-    terminalId: "005", // Example terminal ID
-    store: "Online Store", // Example store
-    email: "julia.roberts@example.com" // Example email
+    terminalId: "005",
+    store: "Online Store",
+    email: "julia.roberts@example.com"
   },
   {
     id: "T1006",
@@ -182,9 +187,9 @@ export const transactionsData: ReconciliationTransaction[] = [
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
     servedBy: cashierNames[5],
-    terminalId: "006", // Example terminal ID
-    store: "Cape Town", // Example store
-    email: "alexandra.smith@example.com" // Example email
+    terminalId: "006",
+    store: "Cape Town",
+    email: "alexandra.smith@example.com"
   },
   {
     id: "T1007",
@@ -197,9 +202,9 @@ export const transactionsData: ReconciliationTransaction[] = [
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
     servedBy: cashierNames[6],
-    terminalId: "007", // Example terminal ID
-    store: "Johannesburg", // Example store
-    email: "michael.brown@example.com" // Example email
+    terminalId: "007",
+    store: "Johannesburg",
+    email: "michael.brown@example.com"
   },
   {
     id: "T1008",
@@ -212,9 +217,9 @@ export const transactionsData: ReconciliationTransaction[] = [
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
     servedBy: cashierNames[7],
-    terminalId: "008", // Example terminal ID
-    store: "Cape Town", // Example store
-    email: "sophia.garcia@example.com" // Example email
+    terminalId: "008",
+    store: "Cape Town",
+    email: "sophia.garcia@example.com"
   },
   {
     id: "T1009",
@@ -227,9 +232,9 @@ export const transactionsData: ReconciliationTransaction[] = [
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
     servedBy: cashierNames[8],
-    terminalId: "009", // Example terminal ID
-    store: "Cape Town", // Example store
-    email: "naomi.campbell@example.com" // Example email
+    terminalId: "009",
+    store: "Cape Town",
+    email: "naomi.campbell@example.com"
   },
   {
     id: "T1010",
@@ -242,9 +247,9 @@ export const transactionsData: ReconciliationTransaction[] = [
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
     servedBy: cashierNames[9],
-    terminalId: "010", // Example terminal ID
-    store: "Johannesburg", // Example store
-    email: "james.wilson@example.com" // Example email
+    terminalId: "010",
+    store: "Johannesburg",
+    email: "james.wilson@example.com"
   },
   {
     id: "T1011",
@@ -257,9 +262,9 @@ export const transactionsData: ReconciliationTransaction[] = [
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
     servedBy: cashierNames[0],
-    terminalId: "011", // Example terminal ID
-    store: "Cape Town", // Example store
-    email: "olivia.chen@example.com" // Example email
+    terminalId: "011",
+    store: "Cape Town",
+    email: "olivia.chen@example.com"
   },
   {
     id: "T1012",
@@ -272,9 +277,9 @@ export const transactionsData: ReconciliationTransaction[] = [
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
     servedBy: cashierNames[1],
-    terminalId: "012", // Example terminal ID
-    store: "Johannesburg", // Example store
-    email: "emma.watson@example.com" // Example email
+    terminalId: "012",
+    store: "Johannesburg",
+    email: "emma.watson@example.com"
   }
 ];
 

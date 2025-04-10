@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { Transaction } from "@/components/Dashboard/TransactionsTable";
 import { useEffect, useState } from "react";
+import { format } from "date-fns";
 
 interface TransactionsGraphProps {
   transactions: Transaction[];
@@ -52,6 +53,20 @@ export function TransactionsGraph({ transactions, className }: TransactionsGraph
     setGraphData(dataArray);
   }, [transactions]);
 
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-card text-card-foreground p-3 shadow rounded border border-border">
+          <p className="text-sm font-medium">{label}</p>
+          <p className="text-sm font-medium text-lv-gold">
+            {payload[0].value} transactions
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <Card className={className}>
       <CardHeader className="pb-2">
@@ -69,13 +84,14 @@ export function TransactionsGraph({ transactions, className }: TransactionsGraph
                 bottom: 25,
               }}
             >
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E2DED5" />
               <XAxis 
                 dataKey="date" 
                 angle={-45} 
                 textAnchor="end" 
                 height={60}
                 tick={{ fontSize: 12 }}
+                stroke="#7C7166"
               />
               <YAxis 
                 label={{ 
@@ -83,32 +99,23 @@ export function TransactionsGraph({ transactions, className }: TransactionsGraph
                   angle: -90, 
                   position: 'insideLeft',
                   style: { textAnchor: 'middle' }
-                }} 
-              />
-              <Tooltip 
-                content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    return (
-                      <div className="rounded-lg border bg-background p-2 shadow-md">
-                        <div className="grid grid-cols-2 gap-2">
-                          <span className="font-medium">Date:</span>
-                          <span>{payload[0].payload.date}</span>
-                          <span className="font-medium">Transactions:</span>
-                          <span>{payload[0].value}</span>
-                        </div>
-                      </div>
-                    );
-                  }
-                  return null;
                 }}
+                stroke="#7C7166" 
               />
+              <Tooltip content={<CustomTooltip />} />
               <Legend />
               <Bar 
                 dataKey="count" 
                 name="Transactions" 
-                fill="#8884d8" 
+                fill="#B99F65" 
                 radius={[4, 4, 0, 0]}
               />
+              <defs>
+                <linearGradient id="transactionGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#B99F65" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#B99F65" stopOpacity={0.3}/>
+                </linearGradient>
+              </defs>
             </BarChart>
           </ResponsiveContainer>
         </div>
