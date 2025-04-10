@@ -1,3 +1,4 @@
+
 import { DashboardLayout } from "@/components/Dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -116,41 +117,7 @@ export default function SalesPage() {
             </CardContent>
           </Card>
 
-          {/* Top Products List */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Top Products</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {topProducts.map((product) => (
-                  <div key={product.name} className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">{product.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {product.units} units sold
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium">{formatCurrency(product.sales)}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {(
-                          (product.sales /
-                            topProducts.reduce((sum, p) => sum + p.sales, 0)) *
-                          100
-                        ).toFixed(1)}
-                        % of total
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Bottom Row: Pie Chart */}
-        <div className="mt-6">
+          {/* Product Sales Distribution Pie Chart - Moved up */}
           <Card>
             <CardHeader>
               <CardTitle>Product Sales Distribution</CardTitle>
@@ -180,10 +147,43 @@ export default function SalesPage() {
                         [`${formatCurrency(value)}`, name]
                       }
                     />
-                    {/* Legend only, no labels */}
                     <Legend />
                   </PieChart>
                 </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Bottom Row: Top Products List - Moved down */}
+        <div className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Top Products</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {topProducts.map((product) => (
+                  <div key={product.name} className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">{product.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {product.units} units sold
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium">{formatCurrency(product.sales)}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {(
+                          (product.sales /
+                            topProducts.reduce((sum, p) => sum + p.sales, 0)) *
+                          100
+                        ).toFixed(1)}
+                        % of total
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>

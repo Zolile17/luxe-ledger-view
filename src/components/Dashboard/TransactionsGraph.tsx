@@ -25,10 +25,27 @@ interface TransactionsByDate {
   count: number;
 }
 
+// Default data to show when there are no transactions
+const defaultGraphData = [
+  { date: "2025-04-03", count: 85 },
+  { date: "2025-04-04", count: 102 },
+  { date: "2025-04-05", count: 145 },
+  { date: "2025-04-06", count: 168 },
+  { date: "2025-04-07", count: 172 },
+  { date: "2025-04-08", count: 189 },
+  { date: "2025-04-09", count: 216 },
+  { date: "2025-04-10", count: 253 },
+];
+
 export function TransactionsGraph({ transactions, className }: TransactionsGraphProps) {
-  const [graphData, setGraphData] = useState<TransactionsByDate[]>([]);
+  const [graphData, setGraphData] = useState<TransactionsByDate[]>(defaultGraphData);
 
   useEffect(() => {
+    if (!transactions || transactions.length === 0) {
+      setGraphData(defaultGraphData);
+      return;
+    }
+    
     // Group transactions by date and count them
     const transactionsByDate = transactions.reduce((acc: Record<string, number>, transaction) => {
       const date = transaction.date;
@@ -50,7 +67,8 @@ export function TransactionsGraph({ transactions, className }: TransactionsGraph
       return new Date(a.date).getTime() - new Date(b.date).getTime();
     });
 
-    setGraphData(dataArray);
+    // Use default data if no transactions were processed
+    setGraphData(dataArray.length > 0 ? dataArray : defaultGraphData);
   }, [transactions]);
 
   const CustomTooltip = ({ active, payload, label }: any) => {
