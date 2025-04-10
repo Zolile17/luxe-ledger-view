@@ -100,7 +100,8 @@ export function TransactionsGraph({ transactions, className }: TransactionsGraph
                   position: 'insideLeft',
                   style: { textAnchor: 'middle' }
                 }}
-                stroke="#7C7166" 
+                stroke="#7C7166"
+                domain={[50, 300]} // Setting y-axis domain between 50-300
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend />

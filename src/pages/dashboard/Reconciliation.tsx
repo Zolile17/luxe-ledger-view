@@ -1,6 +1,6 @@
 
 import { DashboardLayout } from "@/components/Dashboard/DashboardLayout";
-import { ReconciliationTable } from "@/components/Dashboard/ReconciliationTable";
+import { ReconciliationTable, Transaction } from "@/components/Dashboard/ReconciliationTable";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { Button } from "@/components/ui/button";
 import { DownloadIcon, FilterIcon, FileDownIcon } from "lucide-react";
@@ -16,7 +16,8 @@ export default function ReconciliationPage() {
   });
   const [selectedStore, setSelectedStore] = useState("All Stores");
 
-  const filteredTransactions = getTransactionsByStore(selectedStore);
+  // Explicitly type the transactions as Transaction[] from ReconciliationTable
+  const filteredTransactions = getTransactionsByStore(selectedStore) as Transaction[];
 
   const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat('en-ZA', {
