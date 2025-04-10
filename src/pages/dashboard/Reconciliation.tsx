@@ -28,7 +28,7 @@ export default function ReconciliationPage() {
 
   return (
     <DashboardLayout
-      title="Reconciliation"
+      title="Payment Reconciliation"
       description="Review and reconcile transactions across all stores"
       selectedStore={selectedStore}
       onStoreChange={setSelectedStore}
