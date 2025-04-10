@@ -81,7 +81,8 @@ export default function OverviewPage() {
             value={formatCurrency(totalRevenue)}
             change={12.5}
             changeText="vs last period"
-            icon={<Banknote className="w-6 h-6 text-green-600" />}
+            icon={<Banknote className="w-6 h-6 text-gray-600" />}
+
           />
           <MetricCard
             title="Sales Count"
