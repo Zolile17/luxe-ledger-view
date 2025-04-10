@@ -124,14 +124,14 @@ export function DashboardSidebar({ className, expanded }: DashboardSidebarProps)
           />
           <SidebarItem 
             icon={<BarChart3Icon className="h-4 w-4" />} 
-            label="Sales Reports" 
+            label="Payment Reports" 
             active={isActive("sales")}
             onClick={() => handleNavigation("sales")}
             expanded={expanded}
           />
           <SidebarItem 
             icon={<CircleDollarSignIcon className="h-4 w-4" />} 
-            label="Reconciliation" 
+            label="Payment Reconciliation" 
             active={isActive("reconciliation")}
             onClick={() => handleNavigation("reconciliation")}
             expanded={expanded}

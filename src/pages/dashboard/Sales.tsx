@@ -62,7 +62,7 @@ export default function SalesPage() {
 
   return (
     <DashboardLayout
-      title="Sales Reports"
+      title="Payment Reports"
       description="Analyse and track your sales performance"
       selectedStore={selectedStore}
       onStoreChange={setSelectedStore}
@@ -71,7 +71,7 @@ export default function SalesPage() {
         <div className="mb-8 flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-serif font-medium text-lv-brown">
-              Sales Reports
+              Payment Reports
             </h1>
             <p className="text-muted-foreground">
               Overview of daily revenue and top performing products
@@ -100,7 +100,7 @@ export default function SalesPage() {
           {/* Daily Sales Bar Chart */}
           <Card>
             <CardHeader>
-              <CardTitle>Daily Sales</CardTitle>
+              <CardTitle>Daily Reciepts</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[300px]">
@@ -120,7 +120,7 @@ export default function SalesPage() {
           {/* Product Sales Distribution Pie Chart - Moved up */}
           <Card>
             <CardHeader>
-              <CardTitle>Product Sales Distribution</CardTitle>
+              <CardTitle>Product Revenue Distribution</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[300px] flex justify-center items-center">

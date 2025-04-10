@@ -53,7 +53,7 @@ export function ReconciliationTable({
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Transaction Reconciliation</CardTitle>
+          <CardTitle>Payment Reconciliation</CardTitle>
         </CardHeader>
         <CardContent>
           <TransactionTable 

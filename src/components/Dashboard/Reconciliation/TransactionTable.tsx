@@ -32,7 +32,7 @@ export function TransactionTable({
           <TableHead>Amount</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>RRN</TableHead>
-          <TableHead>Terminal ID</TableHead>
+          <TableHead>TerminalID</TableHead>
           <TableHead>Store</TableHead>
           <TableHead>Served By</TableHead>
           <TableHead>Email</TableHead>

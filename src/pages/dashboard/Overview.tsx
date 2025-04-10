@@ -5,7 +5,7 @@ import { RevenueChart } from "@/components/Dashboard/RevenueChart";
 import { TransactionsGraph } from "@/components/Dashboard/TransactionsGraph";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { Button } from "@/components/ui/button";
-import { DownloadIcon, FilterIcon, CircleDollarSignIcon, BarChart3Icon, ShoppingBagIcon, UsersIcon, FileDownIcon } from "lucide-react";
+import { DownloadIcon, FilterIcon, CircleDollarSignIcon, BarChart3Icon, ShoppingBagIcon, UsersIcon, FileDownIcon, Banknote } from "lucide-react";
 import { useState, useEffect } from "react";
 import { isWithinInterval, parseISO } from "date-fns";
 import { getStoreData, getRevenueData, getTransactionsByStore, storeLocations } from "@/data/dashboardData";
@@ -77,11 +77,11 @@ export default function OverviewPage() {
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <MetricCard
-            title="Total Sales"
+            title="Total Revenue"
             value={formatCurrency(totalRevenue)}
             change={12.5}
             changeText="vs last period"
-            icon={<CircleDollarSignIcon className="h-4 w-4" />}
+            icon={<Banknote className="w-6 h-6 text-green-600" />}
           />
           <MetricCard
             title="Sales Count"
@@ -91,7 +91,7 @@ export default function OverviewPage() {
             icon={<BarChart3Icon className="h-4 w-4" />}
           />
           <MetricCard
-            title="Average Sale"
+            title="Average Revenue"
             value={formatCurrency(averageOrder)}
             change={4.1}
             changeText="vs last period"
