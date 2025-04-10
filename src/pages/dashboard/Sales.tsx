@@ -100,7 +100,7 @@ export default function SalesPage() {
           {/* Daily Sales Bar Chart */}
           <Card>
             <CardHeader>
-              <CardTitle>Daily Reciepts</CardTitle>
+              <CardTitle>Daily Receipts</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[300px]">
