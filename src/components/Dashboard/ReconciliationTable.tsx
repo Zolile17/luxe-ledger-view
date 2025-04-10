@@ -42,6 +42,9 @@ export interface Transaction {
   servedBy?: string;
   paymentMethod?: string;
   notes?: string;
+  terminalId: string; // New field
+  store: string; // New field
+  email: string; // New field, derived from servedBy
 }
 
 interface ReconciliationTableProps {
@@ -93,65 +96,70 @@ export function ReconciliationTable({
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Transaction Reconciliation</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Transaction ID</TableHead>
-                <TableHead>Product</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>RRN</TableHead>
-                <TableHead>Served By</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {currentTransactions.map((transaction) => (
-                <TableRow key={transaction.id}>
-                  <TableCell className="font-medium">
-                    {transaction.id}
-                  </TableCell>
-                  <TableCell>{transaction.productName}</TableCell>
-                  <TableCell>{transaction.customer}</TableCell>
-                  <TableCell>{transaction.date}</TableCell>
-                  <TableCell>{formatCurrency(transaction.amount)}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        transaction.status === "completed"
-                          ? "default"
-                          : transaction.status === "pending"
-                          ? "secondary"
-                          : transaction.status === "refund"
-                          ? "outline"
-                          : "destructive"
-                      }
-                    >
-                      {transaction.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{transaction.rrn || "N/A"}</TableCell>
-                  <TableCell>{transaction.servedBy || "N/A"}</TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      <button
-                        className="text-sm text-blue-600 hover:underline"
-                        onClick={() => handleViewDetails(transaction)}
-                      >
-                        View Details
-                      </button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
+        <CardTitle>Transaction Reconciliation</CardTitle>
+</CardHeader>
+<CardContent>
+  <Table>
+    <TableHeader>
+      <TableRow>
+        <TableHead>TransactionID</TableHead>
+        <TableHead>Product</TableHead>
+        <TableHead>Customer</TableHead>
+        <TableHead>Date</TableHead>
+        <TableHead>Amount</TableHead>
+        <TableHead>Status</TableHead>
+        <TableHead>RRN</TableHead>
+        <TableHead>Terminal ID</TableHead> {/* New column for Terminal ID */}
+        <TableHead>Store</TableHead> {/* New column for Store */}
+        {/* <TableHead>Actions</TableHead> */}
+        <TableHead>Served By</TableHead> {/* New column for Served By */}
+        <TableHead>Email</TableHead> {/* New column for Email */}
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      {currentTransactions.map((transaction) => (
+        <TableRow key={transaction.id}>
+          <TableCell className="font-medium">
+            {transaction.id}
+          </TableCell>
+          <TableCell>{transaction.productName}</TableCell>
+          <TableCell>{transaction.customer}</TableCell>
+          <TableCell>{transaction.date}</TableCell>
+          <TableCell>{formatCurrency(transaction.amount)}</TableCell>
+          <TableCell>
+            <Badge
+              variant={
+                transaction.status === "completed"
+                  ? "default"
+                  : transaction.status === "pending"
+                  ? "secondary"
+                  : transaction.status === "refund"
+                  ? "outline"
+                  : "destructive"
+              }
+            >
+              {transaction.status}
+            </Badge>
+          </TableCell>
+          <TableCell>{transaction.rrn || "N/A"}</TableCell>
+          <TableCell>{transaction.terminalId || "N/A"}</TableCell> {/* New column for Terminal ID */}
+          <TableCell>{transaction.store || "N/A"}</TableCell> {/* New column for Store */}
+          {/* <TableCell>
+            <div className="flex space-x-2">
+              <button
+                className="text-sm text-blue-600 hover:underline"
+                onClick={() => handleViewDetails(transaction)}
+              >
+                View Details
+              </button>
+            </div>
+          </TableCell> */}
+          <TableCell>{transaction.servedBy || "N/A"}</TableCell> {/* New column for Served By */}
+          <TableCell>{transaction.email || "N/A"}</TableCell> {/* New column for Email */}
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
           {/* Pagination Controls */}
           <div className="flex items-center justify-between mt-4">
             <div className="text-sm text-gray-500">

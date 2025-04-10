@@ -70,7 +70,7 @@ export const getTransactionsByStore = (store: string = "All Stores"): Transactio
 
 // Cashier names for transactions
 const cashierNames = [
-  "Thabo Mbeki",
+  "Thabo Mbulazi",
   "Lerato Zulu",
   "Grace Ndlovu",
   "Sipho Mabaso",
@@ -106,7 +106,10 @@ export const transactionsData: ReconciliationTransaction[] = [
     storeLocation: "Cape Town",
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
-    servedBy: cashierNames[0]
+    servedBy: cashierNames[0],
+    terminalId: "001", // Example terminal ID
+    store: "Cape Town", // Example store
+    email: "emily.parker@example.com" // Example email
   },
   {
     id: "T1002",
@@ -118,7 +121,10 @@ export const transactionsData: ReconciliationTransaction[] = [
     storeLocation: "Johannesburg",
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
-    servedBy: cashierNames[1]
+    servedBy: cashierNames[1],
+    terminalId: "002", // Example terminal ID
+    store: "Johannesburg", // Example store
+    email: "sarah.johnson@example.com" // Example email
   },
   {
     id: "T1003",
@@ -130,7 +136,10 @@ export const transactionsData: ReconciliationTransaction[] = [
     storeLocation: "Johannesburg",
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
-    servedBy: cashierNames[2]
+    servedBy: cashierNames[2],
+    terminalId: "003", // Example terminal ID
+    store: "Johannesburg", // Example store
+    email: "thomas.wright@example.com" // Example email
   },
   {
     id: "T1004",
@@ -142,7 +151,10 @@ export const transactionsData: ReconciliationTransaction[] = [
     storeLocation: "Cape Town",
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
-    servedBy: cashierNames[3]
+    servedBy: cashierNames[3],
+    terminalId: "004", // Example terminal ID
+    store: "Cape Town", // Example store
+    email: "david.chen@example.com" // Example email
   },
   {
     id: "T1005",
@@ -154,7 +166,10 @@ export const transactionsData: ReconciliationTransaction[] = [
     storeLocation: "Online Store",
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
-    servedBy: cashierNames[4]
+    servedBy: cashierNames[4],
+    terminalId: "005", // Example terminal ID
+    store: "Online Store", // Example store
+    email: "julia.roberts@example.com" // Example email
   },
   {
     id: "T1006",
@@ -166,7 +181,10 @@ export const transactionsData: ReconciliationTransaction[] = [
     storeLocation: "Cape Town",
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
-    servedBy: cashierNames[5]
+    servedBy: cashierNames[5],
+    terminalId: "006", // Example terminal ID
+    store: "Cape Town", // Example store
+    email: "alexandra.smith@example.com" // Example email
   },
   {
     id: "T1007",
@@ -178,7 +196,10 @@ export const transactionsData: ReconciliationTransaction[] = [
     storeLocation: "Johannesburg",
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
-    servedBy: cashierNames[6]
+    servedBy: cashierNames[6],
+    terminalId: "007", // Example terminal ID
+    store: "Johannesburg", // Example store
+    email: "michael.brown@example.com" // Example email
   },
   {
     id: "T1008",
@@ -190,7 +211,10 @@ export const transactionsData: ReconciliationTransaction[] = [
     storeLocation: "Cape Town",
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
-    servedBy: cashierNames[7]
+    servedBy: cashierNames[7],
+    terminalId: "008", // Example terminal ID
+    store: "Cape Town", // Example store
+    email: "sophia.garcia@example.com" // Example email
   },
   {
     id: "T1009",
@@ -202,7 +226,10 @@ export const transactionsData: ReconciliationTransaction[] = [
     storeLocation: "Cape Town",
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
-    servedBy: cashierNames[8]
+    servedBy: cashierNames[8],
+    terminalId: "009", // Example terminal ID
+    store: "Cape Town", // Example store
+    email: "naomi.campbell@example.com" // Example email
   },
   {
     id: "T1010",
@@ -214,7 +241,10 @@ export const transactionsData: ReconciliationTransaction[] = [
     storeLocation: "Johannesburg",
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
-    servedBy: cashierNames[9]
+    servedBy: cashierNames[9],
+    terminalId: "010", // Example terminal ID
+    store: "Johannesburg", // Example store
+    email: "james.wilson@example.com" // Example email
   },
   {
     id: "T1011",
@@ -226,7 +256,10 @@ export const transactionsData: ReconciliationTransaction[] = [
     storeLocation: "Cape Town",
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
-    servedBy: cashierNames[0]
+    servedBy: cashierNames[0],
+    terminalId: "011", // Example terminal ID
+    store: "Cape Town", // Example store
+    email: "olivia.chen@example.com" // Example email
   },
   {
     id: "T1012",
@@ -238,7 +271,10 @@ export const transactionsData: ReconciliationTransaction[] = [
     storeLocation: "Johannesburg",
     rrn: generateRRN(),
     cardNumber: generateMaskedCard(),
-    servedBy: cashierNames[1]
+    servedBy: cashierNames[1],
+    terminalId: "012", // Example terminal ID
+    store: "Johannesburg", // Example store
+    email: "emma.watson@example.com" // Example email
   }
 ];
 
