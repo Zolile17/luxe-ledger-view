@@ -108,7 +108,7 @@ export default function OverviewPage() {
 
         <div className="grid gap-4 mt-4">
           <RevenueChart data={filteredRevenueData} />
-          <TransactionsGraph transactions={filteredTransactions} />
+          {/* <TransactionsGraph transactions={filteredTransactions} /> */}
         </div>
       </div>
     </DashboardLayout>
