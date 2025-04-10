@@ -91,14 +91,14 @@ export default function OverviewPage() {
             icon={<BarChart3Icon className="h-4 w-4" />}
           />
           <MetricCard
-            title="Average Order"
+            title="Average Sale"
             value={formatCurrency(averageOrder)}
             change={4.1}
             changeText="vs last period"
             icon={<ShoppingBagIcon className="h-4 w-4" />}
           />
           <MetricCard
-            title="New Customers"
+            title="Number of Transactions"
             value={newCustomers.toString()}
             change={15.3}
             changeText="vs last period"
