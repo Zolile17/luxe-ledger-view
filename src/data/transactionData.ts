@@ -31,7 +31,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     servedBy: cashierNames[0],
     terminalId: "001",
     store: "Cape Town",
-    email: "emily.parker@example.com"
+    email: "thabo.parker@example.com"
   },
   {
     id: "T1002",
@@ -46,7 +46,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     servedBy: cashierNames[1],
     terminalId: "002",
     store: "Johannesburg",
-    email: "sarah.johnson@example.com"
+    email: "lerato.johnson@example.com"
   },
   {
     id: "T1003",
@@ -61,7 +61,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     servedBy: cashierNames[2],
     terminalId: "003",
     store: "Johannesburg",
-    email: "thomas.wright@example.com"
+    email: "grace.wright@example.com"
   },
   {
     id: "T1004",
@@ -76,7 +76,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     servedBy: cashierNames[3],
     terminalId: "004",
     store: "Cape Town",
-    email: "david.chen@example.com"
+    email: "sipho.chen@example.com"
   },
   {
     id: "T1005",
@@ -91,7 +91,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     servedBy: cashierNames[4],
     terminalId: "005",
     store: "Online Store",
-    email: "julia.roberts@example.com"
+    email: "nomsa.roberts@example.com"
   },
   {
     id: "T1006",
@@ -106,7 +106,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     servedBy: cashierNames[5],
     terminalId: "006",
     store: "Cape Town",
-    email: "alexandra.smith@example.com"
+    email: "bongani.smith@example.com"
   },
   {
     id: "T1007",
@@ -121,7 +121,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     servedBy: cashierNames[6],
     terminalId: "007",
     store: "Johannesburg",
-    email: "michael.brown@example.com"
+    email: "ayanda.brown@example.com"
   },
   {
     id: "T1008",
@@ -136,7 +136,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     servedBy: cashierNames[7],
     terminalId: "008",
     store: "Cape Town",
-    email: "sophia.garcia@example.com"
+    email: "nelson.garcia@example.com"
   },
   {
     id: "T1009",
@@ -151,7 +151,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     servedBy: cashierNames[8],
     terminalId: "009",
     store: "Cape Town",
-    email: "naomi.campbell@example.com"
+    email: "precious.campbell@example.com"
   },
   {
     id: "T1010",
@@ -166,7 +166,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     servedBy: cashierNames[9],
     terminalId: "010",
     store: "Johannesburg",
-    email: "james.wilson@example.com"
+    email: "themba.wilson@example.com"
   },
   {
     id: "T1011",
@@ -181,7 +181,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     servedBy: cashierNames[0],
     terminalId: "011",
     store: "Cape Town",
-    email: "olivia.chen@example.com"
+    email: "thabo.chen@example.com"
   },
   {
     id: "T1012",
@@ -196,7 +196,7 @@ export const transactionsData: ReconciliationTransaction[] = [
     servedBy: cashierNames[1],
     terminalId: "012",
     store: "Johannesburg",
-    email: "emma.watson@example.com"
+    email: "lerato.watson@example.com"
   }
 ];
 
