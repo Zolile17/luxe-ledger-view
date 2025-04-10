@@ -1,6 +1,4 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { 
   Bar, 
   BarChart, 
@@ -13,7 +11,6 @@ import {
 } from "recharts";
 import { Transaction } from "@/components/Dashboard/TransactionsTable";
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
 
 interface TransactionsGraphProps {
   transactions: Transaction[];
@@ -71,11 +68,16 @@ export function TransactionsGraph({ transactions, className }: TransactionsGraph
     setGraphData(dataArray.length > 0 ? dataArray : defaultGraphData);
   }, [transactions]);
 
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
+  };
+
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-card text-card-foreground p-3 shadow rounded border border-border">
-          <p className="text-sm font-medium">{label}</p>
+          <p className="text-sm font-medium">{formatDate(label)}</p>
           <p className="text-sm font-medium text-lv-gold">
             {payload[0].value} transactions
           </p>
@@ -84,6 +86,12 @@ export function TransactionsGraph({ transactions, className }: TransactionsGraph
     }
     return null;
   };
+
+  // Find min value in data to set Y-axis min value
+  const minCount = Math.min(...graphData.map(item => item.count));
+  // Set the baseline to be approximately 70-80% of the minimum value
+  // This makes the bars look taller while still showing the relative differences
+  const baselineValue = Math.floor(minCount * 0.7);
 
   return (
     <Card className={className}>
@@ -110,16 +118,21 @@ export function TransactionsGraph({ transactions, className }: TransactionsGraph
                 height={60}
                 tick={{ fontSize: 12 }}
                 stroke="#7C7166"
+                tickFormatter={formatDate}
               />
               <YAxis 
+                stroke="#7C7166"
+                // Set custom domain to start at a higher baseline
+                domain={[baselineValue, 'auto']}
+                // Include fewer ticks to emphasize the data points
+                tickCount={4}
+                // Add a label to indicate values
                 label={{ 
-                  value: 'Number of Transactions', 
+                  value: 'Transactions', 
                   angle: -90, 
                   position: 'insideLeft',
                   style: { textAnchor: 'middle' }
                 }}
-                stroke="#7C7166"
-                domain={[50, 300]} // Setting y-axis domain between 50-300
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
