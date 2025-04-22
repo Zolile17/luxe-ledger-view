@@ -16,7 +16,7 @@ export default function ReconciliationPage() {
   });
   const [selectedStore, setSelectedStore] = useState("All Stores");
 
-  // Explicitly type the transactions as Transaction[] from ReconciliationTable
+  // Explicitly type the transactions as Transaction[] from ReconciliationTable testing
   const filteredTransactions = getTransactionsByStore(selectedStore) as Transaction[];
 
   const formatCurrency = (value: number): string => {
