@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
-    base: 'luxe-ledger-view',
+    base: '/Rosebank-College-Dashboard/',
     host: "::",
     port: 8080,
   },

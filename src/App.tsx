@@ -26,7 +26,9 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <Router>
+
+      {/* ✅ Add basename for GitHub Pages */}
+      <Router basename="/Rosebank-College-Dashboard">
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<LoginPage />} />
